@@ -28,7 +28,7 @@ using namespace std;
         return count;
     }
 
-    // leet 695 ===========================================================================
+// leet 695 ===========================================================================
      int dfs(vector<vector<int>>& grid, int i, int j, vector<vector<int>>& dirs){
         grid[i][j]=0; // so that we wont ever come back to this point
         
@@ -57,8 +57,7 @@ using namespace std;
         return ans;
     }
 
-     // leet 130 =======================================================================
-
+// leet 130 =======================================================================
      void dfs(vector<vector<char>>& board, int i, int j, vector<vector<int>>& dirs){
         board[i][j]='$'; // marking anything but "X" && "O";
         for(vector<int> dir: dirs){
@@ -90,4 +89,28 @@ using namespace std;
                     
             }
         }
+    }
+
+    // leet 463 ==================================================================== 
+     int islandPerimeter(vector<vector<int>>& grid) {
+        int num=0;
+        int nbr=0;
+         vector<vector<int>> dirs={{-1,0},{0,1},{1,0},{0,-1}};
+        for(int i=0; i<grid.size(); i++){
+            for(int j=0; j<grid[0].size(); j++){
+                if(grid[i][j]==1){
+                    num++;
+                    for(vector<int> dir: dirs){
+                        int x=i+dir[0];
+                        int y=j+dir[1];
+                        
+                        if(x>=0 && y>=0 && x<grid.size() && y<grid[0].size() && grid[x][y]==1){
+                            nbr++;
+                        }
+                    }
+                    
+                }
+            }
+        }
+        return 4*num-nbr;
     }
