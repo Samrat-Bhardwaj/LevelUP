@@ -52,8 +52,6 @@ public class Graph_1 {
         }
     }
 
-    
-
     // we want to go u->v
     public static boolean hasPath(int u, int v, boolean[] visited){
         if(u==v) return true;
@@ -159,7 +157,126 @@ public class Graph_1 {
         display();
         System.out.println(hamiltonianPath(0,0,new boolean[N],0,""));
     }
+
     
+    // bfs ==============================================================================
+
+    public static void BFS_01(int src, boolean[] vis){
+        LinkedList<Integer> que=new LinkedList<>();
+        que.addLast(src);
+
+        boolean isCycle=false;
+        while(que.size()>0){
+            int vtx=que.removeFirst();
+
+            if(vis[vtx]==true){
+                isCycle=true;
+                continue; // because we dont want it to add its neighbours again
+            }
+
+            vis[vtx]=true;
+
+            for(Edge e:graph[vtx]){
+                if(!vis[e.v])
+                    que.addLast(e.v);
+            }
+        }
+    } 
+
+
+    // bfs with level order withour for loop (dangling/null pointer) ===================================
+    public static void BFS_02(int src, int des,boolean[] vis){
+        LinkedList<Integer> que=new LinkedList<>();
+        que.addLast(src);
+        que.addLast(null); // represents end of level
+
+        boolean isCycle=false;
+        int level=0;
+        while(que.size()>0){
+            int vtx=que.removeFirst();
+
+            if(vis[vtx]==true){
+                isCycle=true;
+                continue; // because we dont want it to add its neighbours again
+            }
+
+            vis[vtx]=true;
+
+            if(vtx==des){
+                System.out.println(level);
+            }
+
+            for(Edge e:graph[vtx]){
+                if(!vis[e.v])
+                    que.addLast(e.v);
+            }
+
+            if(que.getFirst()==null){
+                level++;
+                que.removeFirst();
+                que.addLast(null);
+            }
+        }
+    }
+
+    public static void BFS_03_WithCycle(int src,boolean[] vis){
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+
+        boolean cycle = false;
+        int level = 0;
+        
+        int[] dis = new int[N];
+
+        while(que.size() != 0){
+            int size = que.size();
+            while(size-->0){
+                int vtx = que.removeFirst();
+            
+                if(vis[vtx]){
+                    cycle = true;
+                    continue;
+                }
+                
+                dis[vtx] = level;
+
+                vis[vtx] = true;
+                for(Edge e: graph[vtx]){
+                    if(!vis[e.v]){
+                        que.addLast(e.v);
+                    }
+                }                
+            }
+            level++;
+        }
+    }
+
+    public static void BFS_04_WithoutCycle(int src,boolean[] vis){
+        LinkedList<Integer> que = new LinkedList<>();
+        que.addLast(src);
+        vis[src] = true;
+
+        int level = 0;
+        
+        int[] dis = new int[N];
+
+        while(que.size() != 0){
+            int size = que.size();
+            while(size-->0){
+                int vtx = que.removeFirst();
+                
+                dis[vtx] = level;
+                for(Edge e: graph[vtx]){
+                    if(!vis[e.v]){
+                        vis[e.v] = true;
+                        que.addLast(e.v);
+                    }
+                }                
+            }
+            level++;
+        }
+    }
+
     public static void solve(){
         constructGraph();
     }

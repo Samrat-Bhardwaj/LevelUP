@@ -1,3 +1,4 @@
+#include<queue>
 #include<vector>
 using namespace std;
 // leet 200(graph connected components)(gcc) ============================================
@@ -113,4 +114,93 @@ using namespace std;
             }
         }
         return 4*num-nbr;
+    }
+
+    // set-2 -> bfs =============================================================================
+
+    // leet 785 ========================================================================
+
+      //bipartite - if we can color consecutive vtx with 2 different color, then its bipartite
+    
+    // graph with 0 cycles or with cycles of only even length is always bipartite 
+   
+    // if odd length cycle, then it is bipartite
+    bool isEven(int src, vector<vector<int>>& graph, vector<int>& vis){
+        queue<int> que;
+        que.push(src);
+        
+        int color=0;
+        while(que.size()>0){
+            int s=que.size();
+            
+            while(s--){
+                int vtx=que.front();
+                que.pop();
+                
+                if(vis[vtx]!=-1){ // cycle
+                    if(vis[vtx]!=color){ //odd length cycle;
+                        return false;
+                    }
+                    continue;
+                }
+                vis[vtx]=color;
+                for(int e:graph[vtx]){
+                    if(vis[e]==-1)
+                        que.push(e);
+                }
+            }
+            color=(color+1)%2;
+        }
+        return true;
+    }
+    bool isBipartite(vector<vector<int>>& graph){
+        int N=graph.size();
+        vector<int> vis(N,-1);
+        
+        for(int i=0; i<N; i++){
+            if(vis[i]==-1){
+                bool ans=isEven(i,graph,vis);
+                
+                if(!ans) return false;
+            }
+        }
+        return true;
+    }
+
+
+// leet 1091 ================================================================================
+   int shortestPathBinaryMatrix(vector<vector<int>>& grid){
+        queue<int> que;
+        int n=grid.size();
+        int m=grid[0].size();
+        if(n==0 || m==0 || grid[0][0]==1) return -1;
+        
+         vector<vector<int>> dirs={{0,-1},{-1,-1},{-1,0},{-1,1},{0,1},{1,1},{1,0},{1,-1}};
+        
+        que.push(0);
+        int level=1;
+        while(que.size()>0){
+            int s=que.size();
+            while(s--){
+                int idx=que.front();
+                que.pop();
+                
+                int r=idx/n;
+                int c=idx%m;
+                if(r==n-1 && c==m-1) return level;
+               
+                
+                for(vector<int> dir:dirs){
+                    int x=r+dir[0];
+                    int y=c+dir[1];
+                    
+                    if(x>=0 && y>=0 && x<n && y<m && grid[x][y]==0){
+                        grid[x][y]=1;
+                        que.push(x*n+y);
+                    }
+                }
+            }
+            level++;
+        }
+        return -1;
     }
