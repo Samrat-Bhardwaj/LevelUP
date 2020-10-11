@@ -1,5 +1,6 @@
 #include<queue>
 #include<vector>
+#include<bits/stdc++.h>
 using namespace std;
 // leet 200(graph connected components)(gcc) ============================================
  void dfs(vector<vector<char>>& grid, int i, int j, vector<vector<int>>& dirs){
@@ -203,4 +204,204 @@ using namespace std;
             level++;
         }
         return -1;
+    }
+
+    // leet 994 ============================================================================
+    int orangesRotting(vector<vector<int>>& grid) {
+        queue<int> que;
+        
+        int n=grid.size();
+        int m=grid[0].size();
+        int num=0; // number of fresh oranges
+        int level=0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]==1){
+                    num++;
+                }
+                if(grid[i][j]==2){
+                    que.push((i*m) + j);
+                }
+            }
+        }
+        
+        if(num==0) return 0;
+        vector<vector<int>> dirs={{0,1},{-1,0},{1,0},{0,-1}};
+        while(que.size()>0){
+            int s=que.size();
+            while(s--){
+                int idx=que.front();
+                que.pop();
+                
+                int r=idx/m;
+                int c=idx%m;
+                
+                if(grid[r][c]==0) continue;
+                
+                for(vector<int> dir:dirs){
+                    int x=r+dir[0];
+                    int y=c+dir[1];
+                    
+                    if(x>=0 && y>=0 && x<n && y<m && grid[x][y]==1){
+                        grid[x][y]=2; // rotten 
+                        num--;
+                        que.push((x*m) +y);
+                    }
+                }
+            }
+            level++;
+            if(num==0) break;
+        }  
+        return num==0 ? level : -1; // at the end level will be time
+    }
+
+// leet 286 ========================================================================
+
+// https://www.lintcode.com/problem/walls-and-gates/description ===================
+
+ void wallsAndGates(vector<vector<int>> &rooms) {
+        // write your code here
+        queue<int> que;
+        
+        int n=rooms.size();
+        int m=rooms[0].size();
+        
+        if(n==0) return;
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(rooms[i][j]==0){
+                    que.push(i*m + j);
+                }
+            }
+        }
+        
+        int level=0;
+        vector<vector<int>> dirs={{0,1},{-1,0},{1,0},{0,-1}};
+        
+        while(que.size()>0){
+            int s=que.size();
+            while(s--){
+                int idx=que.front();
+                que.pop();
+                
+                int r=idx/m;
+                int c=idx%m;
+                
+                for(vector<int> dir: dirs){
+                    int x=r+dir[0];
+                    int y=c+dir[1];
+                    
+                    if(x>=0 && y>=0 && x<n && y<m && rooms[x][y]==2147483647){
+                        rooms[x][y]=level+1;
+                        que.push(x*m +y);
+                    }
+                }
+            }
+            level++;
+        }
+    }
+
+    // leet 296 ===========================================================================
+
+    // https://www.lintcode.com/problem/best-meeting-point/description =================
+
+    // method-1, pure bfs, will give TLE when everywhere its 1;
+
+    int minTotalDistance(vector<vector<int>> &grid) {
+        // Write your code here
+        queue<int> que;
+        
+        int n=grid.size();
+        int m=grid[0].size();
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]==1){
+                    que.push(i*m +j);
+                    grid[i][j]=0;
+                }        
+            }
+        }
+        vector<vector<int>> dirs={{0,1},{-1,0},{1,0},{0,-1}};
+        while(que.size()>0){ //applying bfs for every poisition where its 1;
+            vector<vector<bool>> vis(n,vector<bool>(m,false));
+            int i=que.front();
+            que.pop();
+            
+            queue<int> temp;
+            temp.push(i);
+            int dis=1;
+            while(temp.size()>0){
+                int s=temp.size();
+                
+                while(s--){
+                    int idx=temp.front();
+                    temp.pop();
+                    
+                    int r=idx/m;
+                    int c=idx%m;
+                    vis[r][c]=true;
+                    for(vector<int> dir: dirs){
+                        int x=r+dir[0];
+                        int y=c+dir[1];
+                        
+                        if(x>=0 && y>=0 && x<n && y<m && !vis[x][y]){
+                            grid[x][y]+=dis;
+                            vis[x][y]=true;
+                            temp.push(x*m +y);
+                        }
+                    }
+                }
+                dis++;
+            }
+        }
+        
+        int ans=(int)1e8;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                //cout<<grid[i][j]<<" ";
+                ans=min(ans,grid[i][j]);
+            }
+           // cout<<"\n";
+        }
+        return ans;
+    }
+
+    /* method-2, can be used when bfs fail(using manhattan principle ====================*/
+
+    //manhattan principle -> The distance is calculated using Manhattan Distance, 
+    //where distance(p1, p2) = |p2.x - p1.x| + |p2.y - p1.y|.
+    int getDistance(vector<int>& points){
+        sort(points.begin(),points.end());
+
+        int res=0;
+        int i=0;
+        int j=points.size()-1;
+        while(i<j){
+            res+=points[j]-points[i]; // |p2 - p1|
+            i++;
+            j--;
+        }
+        return res;
+    }
+
+    int minTotalDistance(vector<vector<int>> &grid) {
+        vector<int> xpoints;
+        vector<int> ypoints;
+
+        for(int i=0; i<grid.size(); i++){
+            for(int j=0; j<grid[0].size(); j++){
+                if(grid[i][j]==1){
+                    xpoints.push_back(i); // every x-point where 1 is
+                    ypoints.push_back(j); // every y-point where 1 is
+                }
+            }
+        }
+
+        int ans=0;
+        ans+=getDistance(xpoints);
+        ans+=getDistance(ypoints);
+
+        return ans;
     }
