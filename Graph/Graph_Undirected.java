@@ -126,7 +126,8 @@ public class Graph_Undirected {
 
         int[] vis=new int[N];
         for(int i=0; i<N; i++){
-            isCycle=TopoDFS(i, vis, ans);
+            if(vis[i]==0)
+                isCycle=TopoDFS(i, vis, ans);
             if(isCycle) break;
         }
 
