@@ -233,4 +233,52 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
            return tr;
         }
     }
+    // method-2-> dfs =======================
+    public static boolean TopoDFS( ArrayList<Integer>[] graph,int src, int[] vis, ArrayList<Integer> ans){
+        vis[src]=1;
+        for(int e:graph[src]){
+            if(vis[e]==0){
+                if(TopoDFS(graph,e, vis, ans)) return true;    
+            } else if(vis[e]==1) return true;
+        }
+
+        ans.add(src);
+        vis[src]=2;
+        return false;
+    }
+    
+    public int[] findOrder(int numCourses, int[][] pre) {
+        ArrayList<Integer>[] graph=new ArrayList[numCourses];
+        int N=graph.length;
+        for(int i=0; i<graph.length; i++){
+            graph[i]=new ArrayList<>();
+        }
+        
+        for(int i=0; i<pre.length; i++){
+            int u=pre[i][0];
+            int v=pre[i][1];
+            
+            graph[u].add(v);
+        }
+        
+        ArrayList<Integer> ans=new ArrayList<>();
+        
+        boolean isCycle=false;
+
+        int[] vis=new int[N];
+        for(int i=0; i<N; i++){
+            if(vis[i]==0)
+            isCycle=TopoDFS(graph,i, vis, ans);
+            if(isCycle) break;
+        }
+
+       if(isCycle) return new int[0];
+        else {
+            int[] tr=new int[N];
+            for(int i=0; i<N; i++){
+                tr[i]=ans.get(i);
+            }
+            return tr;
+        }
+    }
 }
