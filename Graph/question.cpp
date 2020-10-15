@@ -405,3 +405,49 @@ using namespace std;
 
         return ans;
     }
+
+// leet 542 =============================================================================
+
+    vector<vector<int>> dirs={{0,1},{1,0},{-1,0},{0,-1}};
+    
+    vector<vector<int>> updateMatrix(vector<vector<int>>& matrix){
+        int n=matrix.size();
+        int m=matrix[0].size();
+        queue<int> que;
+        vector<vector<int>> ans(n,vector<int>(m,-1));
+        vector<vector<bool>> visit(n,vector<bool>(m,false));
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(matrix[i][j]==0){
+                    que.push(i*m +j);  // pushing all 0 in our ques because these 0 have power 
+                    ans[i][j]=0;       // to update the ans 
+                } else {                    
+                    ans[i][j]=(int)1e8;
+                }
+            }
+        }
+        
+        // we are not keeping visited because we are just moving in four directions 
+        // we can improve runtime by adding visited 
+        while(que.size()){
+            int idx=que.front(); que.pop();
+            
+            int i=idx/m;
+            int j=idx%m;
+            
+            for(vector<int>& dir:dirs){
+                    int x=i+dir[0];
+                    int y=j+dir[1];
+
+                    if(x>=0 && y>=0 && x<n && y<m){
+                        if(ans[i][j]+1<ans[x][y]){  // if curr ans + 1 has power to update 
+                            ans[x][y]=ans[i][j]+1;  // ans, we update it and add it to queue
+                            que.push((x*m) + y);   // as it may update further answers 
+                        } 
+                        
+                    }
+                }
+        }
+        
+        return ans;
+    }
