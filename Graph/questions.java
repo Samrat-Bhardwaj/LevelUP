@@ -264,6 +264,7 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         ArrayList<Integer> ans=new ArrayList<>();
         
         boolean isCycle=false;
+        
 
         int[] vis=new int[N];
         for(int i=0; i<N; i++){
