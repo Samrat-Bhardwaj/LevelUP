@@ -106,7 +106,7 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
     }
     
     return ans;
-}
+    }
     public boolean canFinish(int numCourses, int[][] pre) {
         ArrayList<Integer>[] graph=new ArrayList[numCourses];
         
@@ -145,7 +145,7 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         return false;
     }
 
-    public boolean canFinish(int numCourses, int[][] pre) {
+    public boolean canFinish_(int numCourses, int[][] pre) {
         ArrayList<Integer>[] graph=new ArrayList[numCourses];
         int N=graph.length;
         for(int i=0; i<graph.length; i++){
@@ -234,7 +234,7 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         }
     }
     // method-2-> dfs =======================
-    public static boolean TopoDFS( ArrayList<Integer>[] graph,int src, int[] vis, ArrayList<Integer> ans){
+    public static boolean TopoDFS_( ArrayList<Integer>[] graph,int src, int[] vis, ArrayList<Integer> ans){
         vis[src]=1;
         for(int e:graph[src]){
             if(vis[e]==0){
@@ -247,7 +247,7 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         return false;
     }
     
-    public int[] findOrder(int numCourses, int[][] pre) {
+    public int[] findOrder_(int numCourses, int[][] pre) {
         ArrayList<Integer>[] graph=new ArrayList[numCourses];
         int N=graph.length;
         for(int i=0; i<graph.length; i++){
@@ -282,3 +282,35 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         }
     }
 }
+
+
+// leet 802 =================================================================
+
+// nice question based on 
+    boolean topo_dfs(int src, int[][] graph, int[] vis){
+        if(vis[src]>0) return vis[src]==1;  // this line is imp bcoz if we get 2, we return false
+        vis[src]=1;                         // as thats not part of any cycle 
+        
+        for(int nbr : graph[src]){
+            if(vis[nbr]==1) return true;
+            if(topo_dfs(nbr,graph,vis)) return true;
+        }
+        
+        vis[src]=2;
+        return false;
+    }
+    public List<Integer> eventualSafeNodes(int[][] graph) {
+        int[] vis=new int[graph.length];  // this will keep knowledge of every vtx if its in any cycle
+        List<Integer> ans=new ArrayList<>(); // or not 
+        
+        for(int i=0; i<graph.length; i++){
+                if(vis[i]==0){
+                    if(!topo_dfs(i,graph,vis)){
+                        ans.add(i);
+                    }
+                } else if(vis[i]==2){  // if its not in any cycle but got visited due to some other vtx
+                    ans.add(i);
+                }
+        }
+        return ans;
+    }

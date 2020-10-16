@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.ArrayList;
 
 public class Graph_Undirected {
     static int N=7;
@@ -42,6 +43,7 @@ public class Graph_Undirected {
 // which means when we will have our topological order elements coming first will have edge to elements
 // coming last and vice versa is not possible (u will only come before v, always);
 
+// there's no correct topological order if there is cycle in graph 
 
 // topological sort using dfs ===========================================================
     public static void TopoDFS(int src,boolean[] vis, ArrayList<Integer> ans){
@@ -134,4 +136,132 @@ public class Graph_Undirected {
         if(isCycle) System.out.println("Cycle");
         else System.out.println(ans);
     } 
+
+// leet 329 ==========================================================================
+
+// dp/dfs ques in graph using kahn's algo ==================
+
+    public int longestIncreasingPath(int[][] matrix) {
+            
+        int n=matrix.length;
+        if(n==0) return 0;
+        int m=matrix[0].length;
+        int[][] indegree=new int[n][m];
+        int[][] dirs={{0,1},{1,0},{0,-1},{-1,0}};
+        
+        //increasing every vertex which have a smaller nbr 
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                for(int[] dir:dirs){
+                    int x=i+dir[0];
+                    int y=j+dir[1];
+                    
+                    if(x>=0 && y>=0 && x<n && y<m && matrix[x][y]>matrix[i][j]){
+                        indegree[x][y]++; 
+                    }
+                }
+            }
+        }
+        
+        // now only those points having 0 nbr with greater elements 
+
+        LinkedList<Integer> que=new LinkedList<>();
+        //making our queue
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(indegree[i][j]==0){
+                    que.addLast(i*m + j);
+                }
+            }
+        }
+        
+        int level=0;
+        //applying kahn's algo 
+        while(que.size()>0){
+            int size=que.size();
+            while(size-->0){
+                int idx=que.removeFirst();
+                
+                int i=idx/m;
+                int j=idx%m;
+                
+                for(int[] dir:dirs){
+                    int x=i+dir[0];
+                    int y=j+dir[1];
+                    
+                if(x>=0 && y>=0 && x<n && y<m && matrix[x][y]>matrix[i][j] &&--indegree[x][y]==0){
+                        que.addLast(x*m +y);
+                    }
+                }
+            }
+            level++;
+        }
+        return level;
+    }
+
+// strongly connected components - those components which are a part of cycle i.e. if we can come back
+// to that vertex by some path ====
+
+// scc -KOSARAJU ALGO =====================
+
+// vertex printed in one line is one scc
+    public static void dfs_ssc(int src, boolean[]visit,ArrayList<Integer> ans){
+        visit[src]=true;
+
+        for(int nbr:graph[src]){
+            if(!vis[nbr])
+                dfs_ssc(nbr,visit,ans);
+        }
+
+        ans.add(src);
+    }
+
+    public static void dfs_ssc2(ArrayList<Integer>[] ngraph, int src, boolean[]visit){
+        visit[src]=true;
+        System.out.print(src+" ");
+        for(int nbr:ngraph[src]){
+            if(!visit[nbr])
+                dfs_ssc2(ngraph,nbr,visit);
+        }
+    }
+
+    public static int SCC(){
+        ArrayList<Integer> topo=new ArrayList<>();
+
+        boolean[] visit=new boolean[N];
+        for(int i=0; i<N; i++){
+            if(!visit[i]){
+                dfs_ssc(i,visit,topo);
+            }
+        }
+
+        // reversing the graph
+        ArrayList<Integer>[] nGraph=new ArrayList[N];
+
+        for(int i=0; i<N; i++){
+            nGraph[i]=new ArrayList<>();
+        }
+
+        for(int i=0; i<N; i++){
+            for(int nbr:graph[i]){
+                nGraph[nbr].add(i);
+            }
+        }
+
+        // getting comp
+        int count=0;
+        visit=new boolean[N];
+        for(int i=0;i<N; i++){
+            if(!visit[i]){
+                count++;
+                dfs_ssc2(nGraph, i, visit);
+                System.out.println();
+            }
+        }
+
+        return count;
+    }
+
 }
+
+
