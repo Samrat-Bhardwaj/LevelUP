@@ -451,3 +451,47 @@ using namespace std;
         
         return ans;
     }
+
+// leet 815 =================================================================
+        int numBusesToDestination(vector<vector<int>>& routes, int S, int T) {
+         if(S==T) return 0;
+        
+        unordered_map<int,vector<int>> ma;
+        unordered_set<int> se;
+        
+        int n=routes.size();
+        
+        for(int i=0; i<n; i++){
+            for(int busStand:routes[i]){
+                ma[busStand].push_back(i);  // konse stand p kon konsi bus ati h, uska map
+            }
+        }
+        
+        queue<int> que;
+        vector<bool> vis(n,false); // to see which bus we have already visited
+        que.push(S);  
+        se.insert(S);
+        
+        int level=0;
+        while(que.size()>0){
+            int size=que.size();
+            while(size--){
+                int src=que.front(); que.pop();
+                
+                for(int bus:ma[src]){ 
+                    if(vis[bus]) continue; //boarding those buses which we haven't yet
+                    
+                    vis[bus]=true;
+                    for(int busStand: routes[bus]){
+                        if(se.find(busStand)==se.end()){  //getting to those stand only 
+                            if(busStand==T) return level+1;// which we have not visited yet
+                                                            // using the bus
+                            que.push(busStand);
+                        }
+                    }
+                }
+            }
+            level++;
+        }
+        return -1;
+    }    
