@@ -209,7 +209,7 @@ public class Graph_Undirected {
         visit[src]=true;
 
         for(int nbr:graph[src]){
-            if(!vis[nbr])
+            if(!visit[nbr])
                 dfs_ssc(nbr,visit,ans);
         }
 
@@ -251,10 +251,10 @@ public class Graph_Undirected {
         // getting comp
         int count=0;
         visit=new boolean[N];
-        for(int i=0;i<N; i++){
-            if(!visit[i]){
+        for(int i=N-1;i>=0; i--){
+            if(!visit[topo.get(i)]){
                 count++;
-                dfs_ssc2(nGraph, i, visit);
+                dfs_ssc2(nGraph, topo.get(i), visit);
                 System.out.println();
             }
         }

@@ -495,3 +495,94 @@ using namespace std;
         }
         return -1;
     }    
+
+    // union find ====================================================================
+
+    // leet 684 =============
+
+class Solution {
+public:
+    vector<int> par;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        return par[u]=findPar(par[u]);
+    }
+    
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n=edges.size();
+        for(int i=0; i<=n; i++){
+            par.push_back(i);
+        }
+        
+        for(vector<int> a : edges){
+            int gp1=findPar(a[0]);
+            int gp2=findPar(a[1]);
+            
+            if(gp1!=gp2){   // connecting edge between these two by merging
+                par[gp1]=par[gp2]; // or par[gp2]=par[gp1];
+            } else {
+                return a;  // if same parent, then this edge is giving cycle;
+            }
+        }
+        return {};
+    }
+};
+
+// leetcode 1061 ===================
+
+// https://nataliekung.gitbook.io/ladder_code/dfs/lexicographically-smallest-equivalent-string
+vector<int> par(26,-1);
+int findPar(int u){
+    if(par[u]==u) return u;
+
+    return par[u]=findPar(par[u]);
+}
+
+string smallestEquivalentString(string A, string B, string S){
+   
+    for(int i=0; i<26; i++){
+        par[i]=i;
+    }
+
+    int n=A.size();
+
+    for(int i=0; i<n; i++){
+        int gp1=findPar(A[i]-'a');
+        int gp2=findPar(B[i]-'a'); //finding par
+
+        par[gp1]=par[gp2]=min(gp1,gp2); // merging 
+    }
+
+    string ans="";
+
+    for(int i=0; i<n; i++){
+        int p=findPar(S[i]-'a');
+        ans+=(char)(p+'a');
+    }
+
+    return ans;
+}
+
+    int findPar(int u){
+        if(par[u]==u) return u;
+        return par[u]=findPar(par[u]);
+    }
+    
+    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
+        int n=edges.size();
+        for(int i=0; i<=n; i++){
+            par.push_back(i);
+        }
+        
+        for(vector<int> a : edges){
+            int gp1=findPar(a[0]);
+            int gp2=findPar(a[1]);
+            
+            if(gp1!=gp2){   // connecting edge between these two by merging
+                par[gp1]=par[gp2]; // or par[gp2]=par[gp1];
+            } else {
+                return a;  // if same parent, then this edge is giving cycle;
+            }
+        }
+        return {};
+    }
