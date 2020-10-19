@@ -586,3 +586,47 @@ string smallestEquivalentString(string A, string B, string S){
         }
         return {};
     }
+
+    // leet 839 =============================================================
+
+    class Solution {
+public:
+    vector<int> par;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    
+    bool isSimilar(string s, string t){
+        int count=0;
+        for(int i=0; i<s.size(); i++){
+            if(s[i]!=t[i] && ++count > 2) return false;
+        }
+        return true;
+    }
+    
+    int numSimilarGroups(vector<string>& A) {
+        int n=A.size();
+        par.resize(A.size(),0);
+        
+        for(int i=0; i<n; i++) par[i]=i;
+        
+        int count=n;
+        for(int i=0; i<n; i++){
+            int p1=findPar(i);
+            
+            for(int j=i+1; j<n; j++){
+                if(isSimilar(A[i],A[j])){ 
+                    int p2=findPar(j);
+                    if(p1!=p2){
+                        par[p2]=p1;  // if we make p2 parent of p1, parent of i will change & will have 
+                                    // to find it again
+                        count--;  // if we are merging two things, we are reducing groups
+                    }
+                }
+            }
+        }
+        return count;
+    }
+};
