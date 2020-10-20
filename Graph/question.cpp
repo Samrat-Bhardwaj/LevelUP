@@ -496,9 +496,9 @@ using namespace std;
         return -1;
     }    
 
-    // union find ====================================================================
+// union find ====================================================================
 
-    // leet 684 =============
+// leet 684 =============
 
 class Solution {
 public:
@@ -563,31 +563,8 @@ string smallestEquivalentString(string A, string B, string S){
     return ans;
 }
 
-    int findPar(int u){
-        if(par[u]==u) return u;
-        return par[u]=findPar(par[u]);
-    }
-    
-    vector<int> findRedundantConnection(vector<vector<int>>& edges) {
-        int n=edges.size();
-        for(int i=0; i<=n; i++){
-            par.push_back(i);
-        }
-        
-        for(vector<int> a : edges){
-            int gp1=findPar(a[0]);
-            int gp2=findPar(a[1]);
-            
-            if(gp1!=gp2){   // connecting edge between these two by merging
-                par[gp1]=par[gp2]; // or par[gp2]=par[gp1];
-            } else {
-                return a;  // if same parent, then this edge is giving cycle;
-            }
-        }
-        return {};
-    }
 
-    // leet 839 =============================================================
+// leet 839 =============================================================
 
     class Solution {
 public:
@@ -627,6 +604,71 @@ public:
                 }
             }
         }
+        return count;
+    }
+};
+
+// Number of island(leet 200) and its size using union find =========================
+
+class Solution {
+public:
+    vector<int> par;
+    vector<int> size;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    int numIslands(vector<vector<char>>& grid) {
+        if(grid.size()==0 || grid[0].size()==0) return 0;
+        int n=grid.size();
+        int m=grid[0].size();
+        int count=0;
+        
+        //par.resize(n,vector<int>(m,0)); //but we are just increasing size here by pushing
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]=='1'){
+                    count++; // increasing count of possible islands 
+                    par.push_back(i*m + j); 
+                    size.push_back(1);
+                } else {
+                    par.push_back(-1);
+                    size.push_back(0);
+                }
+            }
+        }
+        
+        vector<vector<int>> dirs={{0,1},{1,0}};//we need to check only 2 directions
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(grid[i][j]=='0') continue; // if its '0' we dont want to find its parents
+                   int p1=findPar(i*m+j);
+                
+                for(vector<int> dir:dirs){
+                    int x=i+dir[0];
+                    int y=j+dir[1];
+                    
+                    if(x<n && y<m && grid[x][y]=='1'){
+                        int p2=findPar(x*m+y);
+                        if(p1!=p2){
+                            count--; // if same parents, it means we are merging two islands
+                            par[p2]=p1;//if we do par[p1]=p2; parent of grid[i][j] will
+                                       //change and we will have to calculate it again
+                            size[p2]+=size[p1];
+                        }    
+                    }
+                }
+            }
+        }
+// now if we want to find total area of islands, we'll traverse the size array and we'll add only
+// those in which par[i]==i (coz they are the connected components); 
+
+
+// if we hadn't have used the count, we would have to loop through the par array and counted the 
+// comps with par[i]==i (gcc basically)
+
         return count;
     }
 };

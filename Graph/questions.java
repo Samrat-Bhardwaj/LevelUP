@@ -315,3 +315,35 @@ public ArrayList<Integer> TopoBFS_01(ArrayList<Integer>[] graph){
         }
         return ans;
     }
+
+// union find =================================================================
+
+// leet 684 =====
+
+class Solution {
+    int[] par;
+    public int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    
+    public int[] findRedundantConnection(int[][] edges) {
+        int n=edges.length;
+        par=new int[n+1]; //coz there's no 0 edge, instead there is a n-numbered edge
+        for(int i=0; i<=n; i++) par[i]=i;
+        
+        for(int[] edge:edges){
+            int p1=findPar(edge[0]);
+            int p2=findPar(edge[1]);
+            
+            if(p1!=p2){
+                par[p1]=p2;
+            } else {
+                return edge;
+            }
+        }
+        return new int[]{};
+    }
+}
+

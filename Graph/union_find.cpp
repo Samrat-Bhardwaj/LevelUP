@@ -1,3 +1,5 @@
+// READ NOTES FROM NOTEBOOK ===================================
+
 #include<iostream>
 #include<vector>
 
@@ -68,12 +70,12 @@ void unionFind(int n,vector<vector<int>>& edges){
 
     for(vector<int> a:edges){  // a-> {u,v,w};
 
-        int gp1=findPar(a[0]); //global parent 1
+        int gp1=findPar(a[0]); //global parent 1 -> gp of u
         int gp2=findPar(a[1]); // global parent 2 -> gp of v
 
         if(gp1!=gp2){
             merge(gp1,gp2);
-            addEdge(ngraph,a[0],a[1],a[2]);   
+            addEdge(ngraph,a[0],a[1],a[2]);   // adding edges to make spanning trees ========
         }
     }
 
