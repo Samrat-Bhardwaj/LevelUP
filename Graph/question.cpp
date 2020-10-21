@@ -672,3 +672,50 @@ public:
         return count;
     }
 };
+
+// leet 305(number of island 2) =============================
+
+// https://ttzztt.gitbooks.io/lc/content/number-of-islands-ii.html ===============================
+
+vector<vector<int>> dirs={{-1,0},{0,-1},{1,0},{0,1}};
+vector<int> par;
+
+int findPar(int u){
+    if(par[u]==u) return u;
+
+    return par[u]=findPar(par[u]);
+}
+
+vector<int> numIslands2(int n, int m, vector<vector<int>> positions){
+    par.resize(n*m,0);
+
+    for(int i=0; i<n*m; i++) par[i]=i;
+
+    int count=0;
+    vector<int> ans;
+    vector<vector<int>> grid(n,vector<int>(m,0));
+
+    for(int i=0; i<positions.size(); i++){
+        int x=positions[i][0];
+        int y=positions[i][1];
+
+        if(grid[x][y]==0) {
+        int p1=findPar(x*m +y);
+        count++;
+        for(vector<int> dir:dirs){
+            int r=x+dir[0];
+            int c=y+dir[1];
+
+            if(r>=0 && c>=0 && r<n && c<m && grid[r][c]==1){
+                int p2=findPar(r*m +c);
+                if(p1!=p2){
+                    par[p2]=p1;
+                    count--;
+                }
+            }
+        }
+       }
+       ans.push_back(count);
+    }
+    return ans;
+}
