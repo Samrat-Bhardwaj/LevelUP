@@ -719,3 +719,85 @@ vector<int> numIslands2(int n, int m, vector<vector<int>> positions){
     }
     return ans;
 }
+
+
+// leet 990 =============================================================
+
+class Solution {
+public:
+    vector<int> par;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    bool equationsPossible(vector<string>& eq) {
+        int n=eq.size();
+        for(int i=0; i<26; i++) par.push_back(i);
+        
+        for(int i=0; i<n; i++){
+            if(eq[i][1]=='!') continue;
+            char a=eq[i][0];
+            char b=eq[i][3];
+              
+                int p1=findPar(a-'a');
+                int p2=findPar(b-'a');
+                
+                if(p1!=p2){
+                    par[p2]=p1;
+                } 
+        }
+        
+        for(int i=0; i<n; i++){
+            if(eq[i][1]=='=') continue;
+            char a=eq[i][0];
+            char b=eq[i][3];
+        
+                int p1=findPar(a-'a');
+                int p2=findPar(b-'a');
+                
+                if(p1==p2){
+                    return false;
+                }
+             
+        }
+        
+        
+        return true;
+    }
+};
+
+
+// leet 1168 =================================================================
+
+// https://github.com/azl397985856/leetcode/blob/master/problems/1168.optimize-water-distribution-in-a-village-en.md
+
+int minCostToSupplyWater(int n,vector<int>& wells, vector<vector<int>>& pipes){
+    vector<vector<int>> edges;
+    for(int i=0; i<n; i++){
+        edges.push_back({0,i+1,wells[i]}); // 0 se leke har vertex tak ek edge bana liya cost of well=weight rkhke
+    }                                       // this will help us in deciding where to form well yunki we'll sort
+                                            //edges now
+
+    for(vector<int> pipe:pipes){
+        edges.push_back(pipe); // our graph is ready;
+    }         
+
+    sort(edges.begin(),edges.end(), [] (auto& a, auto& b){
+        return a[2] < b[2];
+    });                    
+
+    for(int i=0; i<=n; i++) par.push_back(i);
+    int cost=0;
+    for(vector<int> edge:edges){
+        int p1=findPar(edge[0]);
+        int p2=findPar(edge[1]);
+
+        if(p1!=p2){
+            par[p1]=p2;
+            cost+=edge[2]; // MST h to hamesha minimum edge hi banega
+        }
+    }
+    return cost;           
+}   
+
