@@ -139,4 +139,60 @@ public class dijkstra_prims {
             }
         }
     }
+
+
+// bellman ford ======================================================
+
+public static void BellmanFord_01(int N, int[][] edges,int src){
+    int dis[]=new int[N];
+
+    Arrays.fill(dis,(int)1e8);
+
+    dis[src]=0;
+
+    boolean negtiveCycle=false;
+
+    for(int i=1; i<=N; i++){
+        boolean isAnyUpdate=false;
+
+        int[] ndis=new int[N];
+
+        for(int j=0; j<N; j++) ndis[j]=dis[j];
+
+        for(int[] e: edges){
+            if(dis[e[0]]!=1e8 && dis[e[0]]+e[2]< ndis[e[1]){
+                ndis[e[1]]=dis[e[0]] + e[2];
+                isAnyUpdate=true;
+            }
+        }
+        if(isAnyUpdate && i==N) negtiveCycle=true;
+
+        if(!isAnyUpdate) break;
+        dis=ndis;
+    }
+}
+
+public static void BellmanFord_02(int N, int[][] edges,int src){
+    int dis[]=new int[N];
+
+    Arrays.fill(dis,(int)1e8);
+
+    dis[src]=0;
+
+    boolean negtiveCycle=false;
+
+    for(int i=1; i<=N; i++){
+        boolean isAnyUpdate=false;
+
+        for(int[] e: edges){
+            if(dis[e[0]]!=1e8 && dis[e[0]]+e[2]< dis[e[1]){
+                dis[e[1]]=dis[e[0]] + e[2];
+                isAnyUpdate=true;
+            }
+        }
+        if(isAnyUpdate && i==N) negtiveCycle=true;
+
+        if(!isAnyUpdate) break;
+    }
+}
 }

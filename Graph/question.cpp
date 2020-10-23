@@ -125,7 +125,7 @@ using namespace std;
     
     // graph with 0 cycles or with cycles of only even length is always bipartite 
    
-    // if odd length cycle, then it is bipartite
+    // if odd length cycle, then it is not bipartite
     bool isEven(int src, vector<vector<int>>& graph, vector<int>& vis){
         queue<int> que;
         que.push(src);
@@ -168,6 +168,59 @@ using namespace std;
         return true;
     }
 
+
+// leet 886 (checking bipartite in undirected graph) ======================================================================
+
+class Solution {
+public:
+    bool isEven(int src,vector<vector<int>>& graph, vector<int>& vis){
+        queue<int> que;
+        
+        que.push(src);
+        int color=0; // two colors -> 0 & 1;
+        while(que.size()>0){
+            int s=que.size();
+            for(int i=0; i<s; i++){
+                int vtx=que.front(); que.pop();
+                
+                if(vis[vtx]!=-1){
+                    if(vis[vtx]!=color){
+                        return false;
+                    }
+                    continue;
+                }
+                
+                vis[vtx]=color;
+                for(int nbr:graph[vtx]){
+                    if(vis[nbr]==-1){
+                        que.push(nbr);
+                    }
+                }
+            }
+            color=(color+1)%2;
+        }
+        return true;
+    }
+    
+    bool possibleBipartition(int N, vector<vector<int>>& dislikes) {
+        vector<vector<int>> graph(N+1,vector<int>());
+        
+        for(vector<int> e:dislikes){
+            graph[e[0]].push_back(e[1]);
+            graph[e[1]].push_back(e[0]);
+        }
+        
+        vector<int> vis(N+1,-1);
+        for(int i=1; i<=N; i++){
+            if(vis[i]==-1){
+                bool ans=isEven(i,graph,vis);
+                
+                if(!ans) return false;
+            }
+        }
+        return true;
+    }
+};
 
 // leet 1091 ================================================================================
    int shortestPathBinaryMatrix(vector<vector<int>>& grid){
@@ -801,3 +854,53 @@ int minCostToSupplyWater(int n,vector<int>& wells, vector<vector<int>>& pipes){
     return cost;           
 }   
 
+// set 4 -> questions based on algos ====================================
+
+// based on bellman Ford ============
+
+// leet 743 ==================
+
+int networkDelayTime(vector<vector<int>>& times, int N, int K) {
+        vector<int> dis(N+1,(int)1e8);
+        
+        dis[K]=0;
+        for(int i=1; i<=N; i++){
+            bool isAnyUpdate=false;
+            for(vector<int> e: times){
+                if(dis[e[0]]!=(int)1e8 && dis[e[0]]+e[2]<dis[e[1]]){
+                    dis[e[1]]=dis[e[0]]+e[2];
+                    isAnyUpdate=true;
+                }
+            }
+            if(!isAnyUpdate) break;
+        }
+        int ans=0;
+        for(int i=1; i<=N;i++){
+            if(dis[i]==(int)1e8) return -1;
+            ans=max(ans,dis[i]);
+        }
+        return ans;
+}
+
+// leet 787 ==============================================================
+
+ // bellman ford algo 
+    int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int K) {
+        vector<int> dis(100,int(1e8));
+        
+        dis[src]=0;
+        for(int i=0; i<=K; i++){  // k stops
+            bool isUpdate =false;
+            vector<int> ndis=dis; // here making of new array is important because if we wont
+            for(vector<int> flight:flights){ // then we coud update value of dis on current level 
+                if(dis[flight[0]]!=(int)1e8 && ndis[flight[1]]>dis[flight[0]]+flight[2]){
+                    isUpdate=true;
+                    ndis[flight[1]]=dis[flight[0]]+flight[2];
+                }
+            }
+            dis=ndis;
+            if(!isUpdate) break;
+        }
+        
+        return dis[dst]==(int) 1e8? -1 : dis[dst];
+}
