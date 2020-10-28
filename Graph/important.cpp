@@ -4,6 +4,9 @@
 
 using namespace std;
 
+// bfs ==============================================================================================
+
+
 // leet 934 ================
 
 // good question with both dfs n bfs ===============================
@@ -75,4 +78,103 @@ vector<vector<int>> dirs={{0,1},{1,0},{-1,0},{0,-1}};
        int ans=makeBridge(A,n);
         
         return ans;
+    }
+
+// leet 1129 ==================
+// another way of bfs ===================
+
+vector<int> shortestAlternatingPaths(int n, vector<vector<int>>& red_edges, vector<vector<int>>& blue_edges) {
+        vector<vector<int>> red(n,vector<int>());
+        vector<vector<int>> blue(n,vector<int>());
+        
+        vector<int> ans(n,-1);
+        unordered_set<string> se;
+        
+        for(int i=0; i<red_edges.size(); i++){
+            red[red_edges[i][0]].push_back(red_edges[i][1]);
+        }
+        
+        for(int i=0; i<blue_edges.size(); i++){
+            blue[blue_edges[i][0]].push_back(blue_edges[i][1]);
+        }
+        
+        queue<pair<int,int>> que;
+        que.push({0,0}); // 0 can be blue and red both
+        
+        int level=0;
+        while(que.size()>0){
+            int s=que.size();
+            while(s--){
+                pair<int,int> edge=que.front();que.pop();
+                int u=edge.first;
+                int color=edge.second;
+                
+                string key=to_string(u)+" "+to_string(color); //marking our edge
+        
+                if(se.find(key)!=se.end()) continue;
+                se.insert(key);
+                
+                if(ans[u]==-1) // agr ye if na likhe to badme dubara ye vtx aane p update ho skta
+                ans[u]=level;
+                
+                // 0 vtx se blue red dono dlva skte
+                if(u==0 || color==2){ //humko blue mila, to hum bs red edges dalvayenge 
+                    for(int e:red[u]){
+                        que.push({e,1}); 
+                    }
+                }
+                
+                if(u==0 || color==1){ // humko red mila, blue edges dalvaye
+                    for(int e:blue[u]){
+                        que.push({e,2});
+                    }
+                }
+            }
+            level++;
+        }
+        return ans;
+    }
+
+// leet 310 ====================================================================================
+
+void del(vector<vector<int>>& graph, int e, int leaf){
+        int i;
+        for(i=0; i<graph[e].size(); i++)
+            if(graph[e][i]==leaf)
+                break;
+        
+        graph[e].erase(graph[e].begin()+i);
+    }
+    vector<int> findMinHeightTrees(int n, vector<vector<int>>& edges) {
+        if(n<2) return {0};
+        int h=(int)1e8;
+        vector<int> leaves;
+        
+        vector<vector<int>> graph(n,vector<int>());
+        
+        for(vector<int> edge:edges){
+            graph[edge[0]].push_back(edge[1]);
+            graph[edge[1]].push_back(edge[0]);
+        }
+        
+        for(int i=0; i<n; i++){
+            if(graph[i].size()==1) leaves.push_back(i);  //size 1 hoga to bs leaf hi ban skte 
+        }
+        
+        int total=n; // max 2 hi ho skte h MHT coz 2 hi max centre ho skte
+        
+        while(total>2){ // ab hum dhire dhire mid m jar h kyunki mid k nodes hi banenge hamare root
+            total-=leaves.size();
+            vector<int> nleaves;
+            
+            for(int leaf:leaves){
+                for(int e:graph[leaf]){
+                    del(graph,e,leaf);
+                    if(graph[e].size()==1) nleaves.push_back(e);
+                }
+            }
+            leaves=nleaves;
+        }
+        
+        return leaves;
     }

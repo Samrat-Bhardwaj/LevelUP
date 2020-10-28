@@ -161,5 +161,67 @@ class important{
         }
             return -1;
     }
-    } 
+    }
+ // sahi question of bfs in strings =====   
+
+
+// leet 127 ============================================
+public boolean oneAlphaDiffer(String str, String tar){
+    if(str.length()!=tar.length()) return false; // alll words have same length though;
+    
+    boolean o=false;
+    for(int i=0; i<str.length(); i++){
+        if(str.charAt(i)!=tar.charAt(i)){
+            if(o) return false;
+            o=true;
+        }
+    }
+    return o;
+}
+
+public List<String> getSimilar(String str, List<String> wList){
+    List<String> ans=new ArrayList<>();
+    
+    for(int i=0; i<wList.size(); i++)
+        if(oneAlphaDiffer(str,wList.get(i)))
+            ans.add(wList.get(i));
+    
+    return ans;
+}
+
+public int ladderLength(String beginWord, String endWord, List<String> wList) {
+    HashMap<String,ArrayList<String>> map=new HashMap<>();
+    
+    List<String> temp=getSimilar(beginWord,wList);
+    map.put(beginWord,new ArrayList<>(temp));
+    
+    for(String s: wList){
+        temp=getSimilar(s,wList);
+        map.put(s,new ArrayList<>(temp));
+    }
+    
+    LinkedList<String> que=new LinkedList<>();
+    HashSet<String> vis=new HashSet<>();
+          que.addLast(beginWord);
+    
+    
+    int level=1;
+    while(que.size()>0){
+        int s=que.size();
+        while(s-->0){
+            String word=que.removeFirst();
+            
+            if(vis.contains(word)) continue;
+            vis.add(word);
+            
+            for(String str:map.get(word)){
+                if(str.equals(endWord)) return level+1;
+                que.addLast(str);
+            }
+        }
+        level++;
+    }
+    return 0;
+}
+
 }
