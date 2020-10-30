@@ -820,6 +820,137 @@ public:
     }
 };
 
+// leet 959 ============================================================
+
+// good question on how to manipulate data given for our own use 
+
+class Solution {
+public:
+    vector<int> par;
+    int count;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    void merge(int z, int k, int l){
+        int p1=findPar(4*(z)+k);
+        int p2=findPar(4*(z)+l);
+                    
+        if(p1!=p2){
+            par[p1]=p2;
+            count--;
+        }
+    }
+    int regionsBySlashes(vector<string>& grid) {
+        int n=grid.size();
+        for(int i=0; i<4*n*n; i++) par.push_back(i);
+        
+        int count=4*n*n;
+        int z=0;  // ye easy krega row col vala kam
+        for(int i=0; i<n; i++){
+            string str=grid[i];
+            for(int j=0; j<n; j++){
+                // cout<<4*(i+j);
+                if(str[j]!='\\'){
+                   merge(z,0,1); // z is our row +col
+                    merge(z,2,3);
+                }
+                
+                if(str[j]!='/'){
+                    merge(z,0,3);
+                    merge(z,1,2);
+                }
+                
+                if(j-1>=0){
+                    int p1=findPar(4*(z-1)+2); // j +- is equal to z+-
+                    int p2=findPar(4*(z));
+                    
+                    if(p1!=p2){
+                        par[p1]=p2;
+                        count--;
+                    }
+                }
+                
+                if(j+1<n){
+                    int p1=findPar(4*(z)+2);
+                    int p2=findPar(4*(z+1));
+                    
+                    if(p1!=p2){
+                        par[p1]=p2;
+                        count--;
+                    }
+                }
+                
+                if(i-1>=0){     // i+- is equal to z+-n (kyunki pura ek row ka differnce h)
+                    int p1=findPar(4*(z-n)+3);
+                    int p2=findPar(4*(z)+1);
+                    
+                    if(p1!=p2){
+                        par[p1]=p2;
+                        count--;
+                    }           
+                }
+                
+                if(i+1<n){
+                    int p1=findPar(4*(z)+3);
+                    int p2=findPar(4*(z+n)+1);
+                    
+                   if(p1!=p2){
+                        par[p1]=p2;
+                        count--;
+                    }
+                }
+                z++;
+            }
+        }
+        
+        int ans=0;
+        for(int i=0; i<4*n*n; i++){
+            if(par[i]==i) ans++;
+        }
+        return ans;
+    }
+};
+
+// gcc using union find ==================
+
+// leet 1319 =============================================================
+
+class Solution {
+public:
+    vector<int> par;
+    int count;
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    
+    int makeConnected(int n, vector<vector<int>>& connections) {
+         for(int i=0; i<n; i++) par.push_back(i);
+        
+        if(connections.size()<n-1) return -1; // agr n-1>= equal gcc h to ans to pkka hoga hi
+        
+       
+        for(vector<int> edge:connections){
+            int p1=findPar(edge[0]);
+            int p2=findPar(edge[1]);
+            
+            if(p1!=p2){
+                par[p1]=p2;
+            } 
+        }
+    
+        int count=0;
+        for(int i=0; i<n; i++){
+            if(par[i]==i) count++; // this gives us total connected components which should be 1; 
+        }
+        // we need to connect baki ka components to this comp only
+        // therefor ans==gcc-1;
+        return count-1;
+    }
+};
 
 // leet 1168 =================================================================
 

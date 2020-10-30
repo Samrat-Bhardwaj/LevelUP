@@ -178,3 +178,44 @@ void del(vector<vector<int>>& graph, int e, int leaf){
         
         return leaves;
     }
+// question on unnion find ===============================================
+
+// leet 547 ========================================
+
+// easy question -> good for practice =====
+
+class Solution {
+public:
+    vector<int> par;
+    
+    int findPar(int u){
+        if(par[u]==u) return u;
+        
+        return par[u]=findPar(par[u]);
+    }
+    int findCircleNum(vector<vector<int>>& M) {
+        int n=M.size();
+        int count=0;
+        
+        for(int i=0; i<n; i++) par.push_back(i);
+        
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(M[i][j]==1){
+                    int p1=findPar(i);
+                    int p2=findPar(j);
+                    
+                    if(p1!=p2){
+                        par[p1]=p2;
+                        // count--;
+                    }
+                }
+            }
+        }
+        for(int i=0; i<n; i++)
+            if(par[i]==i) 
+                count++;
+        
+        return count;
+    }
+};
