@@ -928,7 +928,7 @@ public:
     }
     
     int makeConnected(int n, vector<vector<int>>& connections) {
-         for(int i=0; i<n; i++) par.push_back(i);
+        for(int i=0; i<n; i++) par.push_back(i);
         
         if(connections.size()<n-1) return -1; // agr n-1>= equal gcc h to ans to pkka hoga hi
         
