@@ -406,6 +406,29 @@ int maxEnvelopes(vector<vector<int>>& env){
     return maxCount;
 }
 
+// leet 1027 =====================================
+
+// we can use 2d vector of constraint size instead of vector of map
+// this giving TLE
+int longestArithSeqLength(vector<int>& A) {
+        int n=A.size();
+        vector<unordered_map<int,int>> dp(n);
+        
+        int ans=2;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<i; j++){
+                int v=A[i]-A[j];
+                if(dp[j].find(v)==dp[j].end()){
+                    dp[i][v]=2;
+                } else {
+                    dp[i][v]=dp[j][v]+1;
+                    ans=max(ans,dp[i][v]);
+                }
+            }
+        }
+        return ans;
+    }
+
 // leet 494===============================================================
  int some(vector<int>& nums,int tar,vector<vector<int>>& qb,int sum, int i){
         if(sum==tar && i==nums.size()){
@@ -429,6 +452,32 @@ int findTargetSumWays(vector<int>& nums, int S) {
         vector<vector<int>> qb(nums.size()+1,vector<int>(2*sum+1,-1));
         return some(nums,S,qb,0,0);
 }
+
+// Other good important question ==================
+
+// leet 1277 ==============================================================
+//count binary square in a matrix 
+int countSquares(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        int m=matrix[0].size();
+        
+        vector<vector<int>> qb(n,vector<int>(m,0));
+        
+        int ans=0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(i==0 || j==0){
+                    ans+=qb[i][j]=matrix[i][j];
+                } else if(matrix[i][j]==1){
+                    qb[i][j]=min(qb[i][j-1],min(qb[i-1][j],qb[i-1][j-1]))+1; // qb se compare 
+                                                //                  kyunki aane vala 1 can be part of many squares                                                                    part ban skta baki square ka
+                    ans+=qb[i][j];
+                }
+            }
+        }
+        return ans;
+    }
+
 
 //  CUT-TYPE =============== CUT-TYPE =========== CUT-TYPE ==============================
 void matrixChainMultiplication(){
