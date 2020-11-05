@@ -516,6 +516,237 @@ void solve(){
     cutType();
 }
 
+// iske niche kafi sahi, kafi pyare question ============
+                         
+// leet 44 =============
+
+//wildcard matching 
+// '?' -> 1 char
+// "*" -> any number of chars
+
+class Solution {
+public:
+    string concatenate(string& s){ // for large continuos *****...
+        string ans="";
+        for(int i=0; i<s.size(); i++){
+            if(s[i]=='*'){
+                ans+='*';
+                while(s[i]=='*') i++;
+                i--;
+            } else {
+                ans+=s[i];
+            }
+        }
+        return ans;
+    }
+    
+    bool rec(int n, int m, string& s, string& p, vector<vector<int>>& dp){
+        if(n==0 || m==0){ // the only thing important in this question is this base case
+            if(n==0 && m==0){
+                dp[n][m]=1;
+                return true;
+            } else if(n==0){
+                if(p[m-1]=='*' && m-1==0){
+                    dp[n][m]=1;
+                    return true;
+                } else {
+                    dp[n][m]=0;
+                    return false;
+                }
+            } else {
+                dp[m][m]=0;
+                return false;
+            }
+        }
+        
+        if(dp[n][m]!=-1) return dp[n][m]==1;
+        
+        if(s[n-1]==p[m-1] || p[m-1]=='?'){
+            bool f=rec(n-1,m-1,s,p,dp);
+            dp[n][m] = f ? 1 : 0;
+            return f;
+        } 
+        
+            if(p[m-1]=='*'){
+                bool f=rec(n-1,m,s,p,dp) || rec(n,m-1,s,p,dp);
+                dp[n][m] = f ? 1 : 0;
+                return f;
+            }
+        
+        return false;
+    }
+    
+    bool isMatch(string s, string p) {
+        int n=s.size();
+        p=concatenate(p);
+        int m=p.size();
+        
+        vector<vector<int>> dp(n+1,vector<int>(m+1,-1));
+        
+        return rec(n,m,s,p,dp);
+    }
+};
+
+// leet 85 ===================================
+
+// maximal area of a binary(made up of 1s) rectangle ====
+// we calculate heights of each row and find area using stack =======
+
+int areaOfHistogram(vector<int>& his){
+        int n=his.size();
+        stack<int> st;
+        
+        int ans=0;
+        st.push(-1);
+        
+        for(int i=0; i<n; i++){
+            while(st.top()!=-1 && his[st.top()]>= his[i]){ // poppng and calculating area until 
+                                                // we get to the highest point on left
+                int height=his[st.top()];
+                st.pop();
+                int width=i-st.top()-1;
+                
+                ans=max(ans,height*width); // calculating our ans
+            }
+            st.push(i);
+        }
+        
+        while(st.top()!=-1){
+            int height=his[st.top()];
+            st.pop();
+            int width= n-st.top()-1;
+            
+            ans=max(ans,height*width);
+        }
+        
+        return ans;
+    }
+    int maximalRectangle(vector<vector<char>>& matrix) {
+        int n=matrix.size();
+        if(n==0) return 0;
+        
+        int m=matrix[0].size();
+        
+        vector<int> his(m,0); // histogram -> for storing height at each level
+        int ans=0;
+        for(int i=0; i<n; i++){
+            for(int j=0; j<m; j++){
+                if(i==0){
+                    his[j]= matrix[i][j]=='0' ? 0:1;
+                    continue;
+                }
+                
+                if(matrix[i][j]=='0'){
+                    his[j]=0;
+                } else {
+                    his[j]+=1;
+                }
+            }
+            ans=max(ans,areaOfHistogram(his));
+        }
+        return ans;
+    }
+//https://practice.geeksforgeeks.org/problems/painting-the-fence3727/1#
+
+// number of ways to color a fence with atmost 2 similar color at adjacent points
+
+    long long countWays(int n, int k){ // n ->no. of points , k -> number of colors
+        vector<long long> dp(n+1,0);
+        
+        dp[1]=k; // choice of filling one box with k color is k diff and 0 same 
+        dp[2]=k+(k*(k-1)); // choice of filling 2 is k*k-1 for diff color and for same in 2 adjacent, its k
+        long long diff=k*(k-1);
+        long long same=k;
+
+        // we see same =diff(of previous) and diff=dp[i-1]*k-1;
+        for(int i=3; i<=n; i++){
+            same=diff;
+            diff=(dp[i-1]*(k-1))%mod; //we always have k-1 choices for next;
+            
+            dp[i]=(same+diff)%mod;
+        }
+        return dp[n];
+    }
+
+// leet 646 ===============================
+
+// ques based on lis ===
+
+int findLongestChain(vector<vector<int>>& p) {
+        int n=p.size();
+        sort(p.begin(),p.end(), [] (auto& a, auto& b){
+            return a[1] < b[1];
+        });
+        
+        vector<int> dp(n,1);
+        int ans=1;
+    for(int i=0; i<n; i++){
+        for(int j=i-1; j>=0; j--){
+            if(p[j][1] < p[i][0]){
+                dp[i]=max(dp[i],dp[j]+1);
+            }
+        }
+        ans=max(ans,dp[i]);
+    }
+    return ans;
+    }
+
+//  ================== -> another set <- <- <- <- <- <- <- <- <-
+
+// not actually a dp technique but good thinking ==============================
+
+//leet 1537 =========
+class Solution {
+    public int maxSum(int[] nums1, int[] nums2) {
+        long a=0;
+        long b=0;
+        long ans=0;
+        long mod=(long)1e9 + 7;
+        int i=0,j=0;
+        while(i<nums1.length && j<nums2.length){
+            if(nums1[i]<nums2[j]){
+                a+=nums1[i];
+                i++;
+            } else if(nums2[j]<nums1[i]){
+                b+=nums2[j];
+                j++;
+            } else {
+                ans+=Math.max(a,b)+nums2[j];
+                a=0;
+                b=0;
+                i++;
+                j++;
+            }
+        }
+        
+        while(i<nums1.length) a+=nums1[i++];
+        while(j<nums2.length) b+=nums2[j++];
+        return (int)((ans+ Math.max(a, b)) % mod);
+    }
+};
+
+// https://www.geeksforgeeks.org/program-nth-catalan-number/
+
+
+// catalan number -> 1, 1, 2, 5, 14, 42, 132, 429, 1430
+
+unsigned long int catalan(unsigned int n) 
+{ 
+    // Base case 
+    if (n <= 1) 
+        return 1; 
+  
+    // catalan(n) is sum(sigma) of  
+    // catalan(i)*catalan(n-i-1) 
+    unsigned long int res = 0; 
+    for (int i = 0; i < n; i++) 
+        res += catalan(i)  
+            * catalan(n - i - 1); 
+  
+    return res; 
+} 
+
+
 int main(){
     solve();
     return 0;
