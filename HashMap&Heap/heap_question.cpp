@@ -8,6 +8,41 @@
 #include<unordered_map>
 using namespace std;
 
+// Given a binary tree, we need to check it has heap property or not, Binary tree need to fulfill 
+// the following two conditions for being a heap –
+//      1.It should be a complete tree (i.e. all levels except last should be full).
+//      2.Every node’s value should be greater than or equal to its child node (considering max-heap).
+
+
+// ques -2 ================================================================
+
+// convert min heap to max heap =================
+
+// solution =====
+// just call downHeapify from last half elements 
+
+
+// ques -3 ===============================================================
+
+// convert bST to min heap ========
+// here arr-> inorder traversal of bst (sorted array)=====
+
+void BSTToMinHeap(Node *root, vector<int> arr, int *i) 
+{ 
+    if (root == NULL) 
+        return; 
+  
+    // first copy data at index 'i' of 'arr' to 
+    // the node 
+    root->data = arr[++*i]; 
+  
+    // then recur on left subtree 
+    BSTToMinHeap(root->left, arr, i); 
+  
+    // now recur on right subtree 
+    BSTToMinHeap(root->right, arr, i); 
+} 
+
 // leet 215 =====================================================
 // kth largest element ==========
 
@@ -221,6 +256,54 @@ public:
         sort(ans.begin(),ans.end());
         
         return ans;
+    }
+};
+
+// leet 632 ======================================================================
+
+// smallest range in k lists ==========
+
+// approach-> normal sort k list but while traversing we'll update our ans 
+class Solution {
+public:
+    class compare{
+    public:
+    bool operator()(vector<int>& a, vector<int>& b){
+        return a[0] > b[0];
+    }
+};
+    vector<int> smallestRange(vector<vector<int>>& nums) {
+        int n=nums.size();
+        
+        priority_queue<vector<int>,vector<vector<int>>, compare> pq;
+        
+        int max_=(int)-1e8; // max element in pq at any time (abhi h ya pahle aa chuka)
+        for(int i=0; i<n; i++){
+            pq.push({nums[i][0],i,0});
+            max_=max(max_,nums[i][0]);
+        }
+        
+        int start=0,end=0;
+        int range=(int)1e8;
+        while(pq.size()==n){ //-> this is how we'll make sure we are gtting element from every list 
+            vector<int> curr=pq.top();
+            pq.pop();
+            
+            int val=curr[0];
+            if(max_ -val < range){ // updating our max
+                range=max_ - val;
+                start=val;
+                end=max_;
+            }
+            // cout<<val<<" "<<max_<<" "<<range<<" "<<"\n";
+            int i=curr[1];
+            int j=curr[2];
+            if(j+1 < nums[i].size()){
+                pq.push({nums[i][j+1],i,j+1});
+                max_=max(max_,nums[i][j+1]);  // updating max when putting new element 
+            }
+        }
+        return {start,end};
     }
 };
 
