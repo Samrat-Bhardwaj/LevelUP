@@ -143,6 +143,81 @@ int Kadane(vector<int>& arr, int n){
 	}
 
 
+// leet 376 ============================================================================
+// https://practice.geeksforgeeks.org/problems/longest-alternating-subsequence/0 
+
+// longest alteranting subsequence -> x1 < x2 > x3 < x4 > x5 ..... or x1 > x2 < x3 > x4 .............
+
+
+// dp[i][0] = Length of the longest alternating subsequence 
+//          ending at index i and last element is greater
+//          than its previous element
+// dp[i][1] = Length of the longest alternating subsequence 
+//           ending at index i and last element is smaller
+//           than its previous element
+
+
+int solve(vector<int>& arr, int n){
+    if(n==0) return 0;
+    vector<vector<int>> dp(n,vector<int>(2,1));
+    
+    int ans=1; // minimum one 
+    for(int i=1; i<n; i++){
+        for(int j=0; j<i; j++){
+            
+            // agr arr[i] chota aya 
+            if(arr[i]<arr[j] && dp[i][1] < dp[j][0]+1){
+                dp[i][1] = dp[j][0] + 1;
+            } else if(arr[j] < arr[i] && dp[i][0] < dp[j][1]+ 1){ // agr bada aya to
+                dp[i][0]=dp[j][1]+1;
+            }
+            
+            if(ans < max(dp[i][1],dp[i][0])){
+                ans=max(dp[i][0],dp[i][1]);
+            }
+        }
+    }
+    return ans;
+}
+
+
+// leet 474 ===============================================================
+
+vector<int> calc(string str){
+        vector<int> ans(2,0);
+        
+        for(char c:str){
+            if(c=='0') ans[0]++;
+            else ans[1]++;
+        }
+        return ans;
+    }
+    int findMaxForm(vector<string>& strs, int m, int n) {
+        int l=strs.size();
+        vector<vector<vector<int>>> dp(l+1,vector<vector<int>>(m+1,vector<int>(n+1,0)));
+        //dp[i][j][k]= number of i strings with j number of 0's and k number of 1's;
+        
+        for(int i=1; i<=l;i++){
+            vector<int> nums=calc(strs[i-1]); //number of 0 n 1 in strs[i-1];
+            
+            for(int j=0; j<=m; j++){
+                for(int k=0; k<=n; k++){
+                    if(j>=nums[0] && k>= nums[1]){ // agr hum limit se bahar nhi jare to 
+                                                    // le skte h
+                        dp[i][j][k]=max(dp[i-1][j][k],dp[i-1][j-nums[0]][k-nums[1]]+1);
+                    } else { // nhi lenge
+                        dp[i][j][k]=dp[i-1][j][k];
+                    }
+                }
+            }
+        }
+        return dp[l][m][n];
+
+        // we can save space by taking 2D dp ;
+        // for(string str:strs){
+        //     same inner loops as above
+        // }
+    }
 void solve(){
 
 }
