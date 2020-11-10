@@ -2,6 +2,7 @@ import java.util.Stack;
 import java.lang.StringBuilder;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.HashMap;
 
 class Stack_ques{
 
@@ -306,10 +307,342 @@ class StockSpanner {
 // *************** important ************************// 
 
 // how to implement k stacks using one array ===========
+// same ques for queue
+
+// https://www.geeksforgeeks.org/efficiently-implement-k-stacks-single-array/ -> same for queue
 
 
-// https://www.geeksforgeeks.org/efficiently-implement-k-stacks-single-array/ 
+// celebrity problem in O(n) ================================= 
+
+//https://practice.geeksforgeeks.org/problems/the-celebrity-problem/1#
+
+int celebrity(int M[][], int n){
+    Stack<Integer> st=new Stack<>();
+    
+    for(int i=0; i<n; i++) st.push(i);
+    
+    while(st.size()>1){ // O(n) m possible answer upar aa jayega stack k
+        int a=st.pop();
+        int b=st.pop();
+        
+        if(M[a][b]==1){
+            st.push(b);
+        } else if(M[b][a]==1){
+            st.push(a);
+        }
+    }
+    
+    if(st.size()==0) return -1; // stack empty to no celebrity
+    
+    int num=st.pop(); // possible answer
+    
+    for(int i=0; i<n; i++){ // checking ki num ko sab jante h, vrna return -1;
+        if(i==num) continue;
+        if(M[i][num]==0) return -1;
+    }
+    
+    for(int j=0; j<n; j++){ // checking ki num kisiko nhi janta
+        if(num==j) continue;
+        if(M[num][j]==1) return -1;
+    }
+
+    return num;
+}
 
 
+// infix evaluation ===========================================================
 
+//solve -> (2+4)*(8/2);
+public static int ieo(String str){
+    Stack <Integer> s1= new Stack <> ();
+    Stack <Character> s2= new Stack <> ();
+    for(int i=0; i<str.length(); i++){
+        char c=str.charAt(i);
+        if(c>='0' && c<='9'){
+            s1.push(c-'0');
+        } else if(c=='('){
+            s2.push(c);
+        } 
+        else if(c==')'){
+            while(!s1.empty() && s2.peek()!='('){
+                char op=s2.pop();
+                int o2=s1.pop();
+                int o1=s1.pop();
+                s1.push(solve(o1,o2,op));
+            }
+            s2.pop();
+        } else if(c=='+' || c=='-' || c=='*' || c=='/'){
+            while(!s2.empty() && s2.peek()!='(' && prec(c)<=prec(s2.peek())){
+                char op=s2.pop();
+                int o2=s1.pop();
+                int o1=s1.pop();
+                s1.push(solve(o1,o2,op));
+            }
+            s2.push(c);
+        }
+    }
+    
+    while(!s2.empty() ){
+      char op=s2.pop();
+                int o2=s1.pop();
+                int o1=s1.pop();
+                s1.push(solve(o1,o2,op));  
+    }
+    
+    return s1.pop();
+ }
+ 
+ public static int solve(int o1, int o2, char op){
+      if(op == '+'){
+      return o1 + o2;
+    } else if(op == '-'){
+      return o1 - o2;
+    } else if(op == '*'){
+      return o1 * o2;
+    } else {
+      return o1 / o2;
+    }
+ } 
+ 
+ public static int prec(char c){
+     if(c=='/' || c=='*'){
+         return 2; 
+     } else return 1;
+}
+
+// postfix evaluation =============================================================
+
+// leet 150 ======
+
+public static int solve_(int a, int b, char ch){
+    if(ch=='+'){
+        return a+b;
+    } else if(ch=='-'){
+        return a-b;
+    } else if(ch=='*'){
+        return a*b;
+    } else {
+        return a/b;
+    }
+}
+public int evalRPN(String[] tokens) {
+    Stack<Integer> st1=new Stack<>();
+    
+    for(int i=0; i<tokens.length; i++){
+        String ch=tokens[i];
+        
+         if(ch.equals("+") || ch.equals("-") || ch.equals("*") || ch.equals("/")){
+            int b=st1.pop();// it is important ki pahle vala piche aaye opeartor k
+            int a=st1.pop();
+            int c=solve_(a,b,ch.charAt(0));
+            st1.push(c);
+        } else {
+            st1.push(Integer.parseInt(ch));
+        }
+    }
+    return st1.peek();
+}
+
+// sort stack using recursion ======================================================================
+
+static void sortedInsert(Stack<Integer> s, int x) 
+    { 
+        // Base case: Either stack is empty or newly 
+        // inserted item is greater than top (more than all 
+        // existing) 
+        if (s.isEmpty() || x > s.peek())  
+        { 
+            s.push(x); 
+            return; 
+        } 
+  
+        // If top is greater, remove the top item and recur 
+        int temp = s.pop(); 
+        sortedInsert(s, x); 
+  
+        // Put back the top item removed earlier 
+        s.push(temp); 
+    } 
+  
+    // Method to sort stack 
+    static void sortStack(Stack<Integer> s) 
+    { 
+        // If stack is not empty 
+        if (!s.isEmpty())  
+        { 
+            // Remove the top item 
+            int x = s.pop(); 
+  
+            // Sort remaining stack 
+            sortStack(s); 
+  
+            // Push the top item back in sorted stack 
+            sortedInsert(s, x); 
+        } 
+    } 
+
+// leet 56 =======================================================================================
+
+// merge intervals =======================================
+
+public int[][] merge(int[][] intervals) {
+    Arrays.sort(intervals,(a,b)->{
+       if(a[0]==b[0]) return a[1]-b[1];
+        return a[0]-b[0];
+    });
+    
+    Stack<Integer> st=new Stack<>();
+    int n=intervals.length;
+    
+    for(int i=0; i<n; i++){
+        if(i==0){
+            st.push(intervals[i][0]);
+            st.push(intervals[i][1]);
+        } else {
+            int b=st.peek();
+            if(b < intervals[i][0]){
+                st.push(intervals[i][0]);
+                st.push(intervals[i][1]);
+            } else {
+                b=Math.max(b,intervals[i][1]);
+                st.pop();
+                st.push(b);
+            }
+        }
+    }
+    
+    int s=st.size()/2;
+    int[][] ans=new int[s][2];
+    
+    for(int i=s-1; i>=0; i--){
+        ans[i][1]=st.pop();
+        ans[i][0]=st.pop();
+    }
+    
+    return ans;
+}
+
+
+// op problem =======================================================================
+
+//LRU cache
+
+public class questionStack{
+    class LRUCache
+    {
+    
+        class Node
+        {
+            int key = 0;
+            int value = 0;
+    
+            Node next = null;
+            Node prev = null;
+    
+            Node(int key, int value)
+            {
+                this.key = key;
+                this.value = value;
+            }
+        }
+    
+        Node head = null;
+        Node tail = null;
+        int size = 0;
+        int maxSize = 0;
+    
+        void addLast(Node node)
+        {
+            if (this.size == 0)
+            {
+                this.head = node;
+                this.tail = node;
+            }
+            else
+            {
+                this.tail.next = node;
+                node.prev = this.tail;
+                this.tail = node;
+            }
+            this.size++;
+        }
+    
+        void removeNode(Node node)
+        {
+    
+            if (this.size == 1)
+            {
+                this.head = node;
+                this.tail = node;
+            }
+            else if (node.prev == null)
+            {
+                this.head = node.next;
+    
+                this.head.prev = null;
+                node.next = null;
+            }
+            else if (node.next == null)
+            {
+                this.tail = node.prev;
+    
+                this.tail.next = null;
+                node.prev = null;
+            }
+            else
+            {
+                Node prev = node.prev;
+                Node next = node.next;
+    
+                prev.next = next;
+                next.prev = prev;
+    
+                node.next = null;
+                node.prev = null;
+            }
+            this.size--;
+        }
+    
+        HashMap<Integer, Node> map=new HashMap<>(); // key, node
+        LRUCache(int capacity)
+        {
+            this.maxSize = capacity;
+        }
+    
+        int get(int key)
+        {
+            if (!map.containsKey(key))
+                return -1;
+    
+            Node node = map.get(key);
+            int rv = node.value;
+    
+            removeNode(node);
+            addLast(node);
+    
+            return rv;
+        }
+    
+        void put(int key, int value)
+        {
+            if (!map.containsKey(key)){
+                Node node = new Node(key, value);
+                map.put(key , node);
+                addLast(node);
+                if(this.size > this.maxSize){
+                   node = this.head;
+                    
+                   map.remove(node.key);
+                   removeNode(node);  
+                }
+            }
+            else
+            {
+                int val = get(key);
+                if (val != value)
+                    map.get(key).value = value;
+            }
+        }
+    }
+}
 }
