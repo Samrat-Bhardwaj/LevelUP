@@ -126,7 +126,7 @@ public class recursion5 {
         }
         return true;
     }
-
+    
     public static int Nqueen(boolean[][] box, int qpsf, String ans,int i){
         if(qpsf==0){
             System.out.println(ans);
