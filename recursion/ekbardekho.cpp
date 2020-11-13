@@ -1,5 +1,6 @@
 #include <iostream>
 #include<vector>
+#include<unordered_set>
 #include<algorithm>
 #include<utility>
 using namespace std;
@@ -169,3 +170,83 @@ void some(int si, int ei,vector<vector<string>>& ans,vector<string>& temp, vecto
         some(0,n-1,ans,temp,pal,s);
         return ans;
     }
+
+// partition into k subsets =====================================================================================================
+
+// leet 698 ========================================================================
+
+// tarika -> 1 === more like permutations (no jrurat of idx(just to count elements)), will give Tle============
+bool rec(vector<int>& nums,vector<bool>& vis,int sum,int csum,int k,int idx){
+    if(csum==sum){
+        k--;
+        csum=0;
+    }
+    if(idx==nums.size() && k==0){
+        return true;
+    }
+    
+    for(int j=0; j<nums.size(); j++){
+        if(!vis[j] && csum+nums[j]<=sum){
+            vis[j]=true;
+            bool f=rec(nums,vis,sum,csum+nums[j],k,idx+1);
+            if(f) return f;
+            vis[j]=false;
+        }
+    }
+    return false;
+}
+
+// tarika - 2 -> more like combinations ===========================================================
+
+ //sum-> target; csum -> current sum; k-> number of subsets
+    bool rec(vector<int>& nums,vector<bool>& vis,int sum,int csum,int k,int idx){
+    if(k==1) return true;
+    
+    if(csum==sum){
+        return rec(nums,vis,sum,0,k-1,0);
+    }
+    
+    for(int j=idx; j<nums.size(); j++){
+        if(!vis[j] && csum+nums[j]<=sum){
+            vis[j]=true;
+            bool f=rec(nums,vis,sum,csum+nums[j],k,j+1);
+            if(f) return f;
+            vis[j]=false;
+        }
+    }
+        
+    return false;
+}
+    bool canPartitionKSubsets(vector<int>& nums, int K) {
+        int N=nums.size();
+        int sum=0;
+    for(int e:nums) sum+=e;
+     
+    if(K>=N || K<=0 || sum%K!=0) return false;
+    sum=sum/K;
+    vector<bool> vis(N,0);
+    return rec(nums,vis,sum,0,K,0);
+    }
+
+// word break ==============================================================================================
+
+unordered_set<string> se; // set containing words 
+
+void rec(string str,vector<vector<string>>& ans,vector<string>& temp,int i,int j){
+    if(j==str.size()){
+        if(se.find(str.substr(i,j-i))!=se.end()){
+            temp.push_back(str.substr(i,j-i));
+            ans.push_back(temp);
+            temp.pop_back();
+        }
+        return;
+    }
+    
+    if(se.find(str.substr(i,j-i))!=se.end()){
+        temp.push_back(str.substr(i,j-i));
+        rec(str,ans,temp,j,j+1);
+        temp.pop_back();
+    }
+    
+    rec(str,ans,temp,i,j+1);
+}
