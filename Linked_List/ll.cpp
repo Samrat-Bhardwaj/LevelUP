@@ -515,7 +515,7 @@ ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
             curr=temp;
             temp=temp->next;
         }
-        curr->next=headB;
+        curr->next=headB; // cycle bana diya 
         ListNode* res=detectCycle(headA);
         curr->next=nullptr;
         return res; 

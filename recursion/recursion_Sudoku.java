@@ -122,7 +122,7 @@ public class recursion_Sudoku {
 
     public static int getNum(String str){
         int ans=0;
-       int j=1;
+        int j=1;
         for(int i=str.length()-1; i>=0; i--){
             char ch=str.charAt(i);
             int num=wo[ch-'a'];
@@ -131,6 +131,7 @@ public class recursion_Sudoku {
         }
         return ans;
     }
+
     public static int Crypto(String str, int i){
         if(i==str.length()){
             int x=getNum(s1);

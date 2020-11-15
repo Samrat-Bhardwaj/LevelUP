@@ -58,7 +58,7 @@ public class Link_construction {
             if(idx==0){
                 addFirst(data);
             } else if(idx==this.size){
-                addFirst(data);
+                addLast(data);
             } else {
                 Node prev=getNode(idx-1);
                 Node next=getNode(idx);
