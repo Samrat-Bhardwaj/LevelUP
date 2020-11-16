@@ -1,6 +1,17 @@
 #include<iostream>
 using namespace std;
 
+// Ques -> Can we reverse a linked list in less than O(n) ?
+
+// Ans  -> No we cant until its DLL with head n Tail pointers (then we can just swap head n tail and tada
+// its reversed);
+
+
+// Ques -> Why Quick Sort preferred for Arrays and Merge Sort for Linked Lists?
+
+// Ans -> https://www.geeksforgeeks.org/why-quick-sort-preferred-for-arrays-and-merge-sort-for-linked-lists/
+
+
 struct ListNode
 {
     int val;
@@ -10,6 +21,40 @@ struct ListNode
     ListNode(int x) : val(x), next(nullptr) {}
     ListNode(int x, ListNode *next) : val(x), next(next) {}
 };
+
+struct Node
+{
+    int data;
+    Node* next;
+    
+    Node(int x){
+        data = x;
+        next = NULL;
+    }
+};
+
+// https://practice.geeksforgeeks.org/problems/delete-nodes-having-greater-value-on-right/1# 
+
+// adjacent right bada hua to curr ko hatado ==============================================
+
+// good question on recursion in linked list ===================================
+
+Node *compute(Node *head)
+{
+    if(head==nullptr || head->next==nullptr){
+        return head;
+    }
+    
+    Node* temp=compute(head->next);
+    
+    if(head->data < temp->data){
+        return temp;
+    }
+    head->next=temp;
+    return head;
+}
+
+
 
 // good question, should attempt 
 // leet 82====================================================================================
