@@ -5,7 +5,7 @@ using namespace std;
 class Node{
     public:
     int data;
-    Node* left=nullptr;;
+    Node* left=nullptr;
     Node* right=nullptr;
     int bal=0;
     int h=0;
@@ -52,7 +52,7 @@ void updateHeightAndBalance(Node* node){
         lh=node->left->h;
 
     if(node->right!=nullptr)
-        rh=node->left->h;
+        rh=node->right->h;
 
     node->h=max(lh,rh)+1;
     node->bal=lh-rh;        
@@ -176,5 +176,6 @@ void solve()
 }
 
 int main(){
+    solve();
     return 0;
 }
