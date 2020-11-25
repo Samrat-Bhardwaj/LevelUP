@@ -143,4 +143,68 @@ Node head=null,prev=null;
         //or simply just
         //getSum(node);
     }
+
+//https://practice.geeksforgeeks.org/problems/populate-inorder-successor-for-all-nodes/1#    
+
+// inorder successor ko popoulate krna 
+
+// prev maintain kiya h n tatic rkhna is imp vrna kho jayega
+    static Node prev_=null;
+    public static void populateNext_(Node root){
+        if(root==null) return;
+        
+        populateNext_(root.left);
+        
+        if(prev_!=null)
+            prev_.next=root;
+            
+        prev_=root;
+        populateNext_(root.right);
+    }
+    
+    public static void populateNext(Node root)
+    {
+         prev=null;
+        populateNext_(root);
+    }
+// question 
+// flatten bst -> sabse chota element root and ek ek element right m and so on ====
+
+
+// jaise hum linked list m krte the, ek dummy node banaya aur phir uske according 
+// inorder m jake left null kiya aur right m dalva liye elements 
+
+void inorder(node* curr, node*& prev) 
+{ 
+    // Base case 
+    if (curr == NULL) 
+        return; 
+    inorder(curr->left, prev); 
+    prev->left = NULL; 
+    prev->right = curr; 
+    prev = curr; 
+    inorder(curr->right, prev); 
+} 
+  
+// Function to flatten binary tree using 
+// level order traversal 
+node* flatten(node* parent) 
+{ 
+    // Dummy node 
+    node* dummy = new node(-1); 
+  
+    // Pointer to previous element 
+    node* prev = dummy; 
+  
+    // Calling in-order traversal 
+    inorder(parent, prev); 
+  
+    prev->left = NULL; 
+    prev->right = NULL; 
+    node* ret = dummy->right; 
+  
+    // Delete dummy node 
+    delete dummy; 
+    return ret; 
+} 
 }
