@@ -407,7 +407,7 @@ public static Node rightMost(Node root, Node next){
 // important - traversal in O((3-4)n) n O(1) space ===============================================
 
 public static void MorisInTraversal(Node root){
-    Node curr=root;// we need to think how we travel in preorder and print accordingly 
+    Node curr=root;// we need to think how we travel in ineorder and print accordingly 
     while(curr!=null){ // thread is used to make so that we can travel easily ===
         Node left=curr.left;
         if(left!=null){
@@ -482,7 +482,7 @@ public static void PostorderIte(Node root){
         } else if(!rp.selfDone){
             System.out.print(rp.node.data+" ");
              rp.selfDone=true;
-         } else {
+        } else {
             st.pop();
         }
     }
