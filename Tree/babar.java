@@ -207,4 +207,39 @@ node* flatten(node* parent)
     delete dummy; 
     return ret; 
 } 
+
+
+// recover BST, 2 nodes idhar udhar ho gye, unko vapis lgana h sahi jagah
+
+TreeNode prev,a,b=null;
+    public boolean getNodes(TreeNode root){
+        if(root==null) return false;
+        
+        if(getNodes(root.left)) return true;
+        
+        if(prev!=null){
+            if(prev.val>root.val){
+                b=root;
+                if(a==null){
+                    a=prev;
+                } else {
+                    return true;
+                } 
+            }
+        }
+        
+        prev=root;
+        if(getNodes(root.right)) return true;
+        
+        return false;
+    }
+    public void recoverTree(TreeNode root) {
+        getNodes(root);
+        
+        int temp=a.val;
+        a.val=b.val;
+        b.val=temp;
+    }
+
+    
 }
