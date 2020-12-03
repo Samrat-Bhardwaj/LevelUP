@@ -219,3 +219,34 @@ public:
         return count;
     }
 };
+
+// babbar bhaiya ===================================================================
+
+// leet 133 =====================
+
+class Solution {
+public:
+    unordered_map<int,Node*> m;
+        
+    Node* clone_(Node* node){
+        if(!node) return nullptr;
+        
+        if(m.find(node->val)!=m.end()){
+            return m[node->val];
+        }
+        
+        
+        
+        Node* clone=new Node(node->val);
+        m[clone->val]=clone;
+        for(Node* neighbor:node->neighbors){
+            Node* nbr=clone_(neighbor);
+            clone->neighbors.push_back(nbr);
+        }
+        
+        return clone;
+    }    
+    Node* cloneGraph(Node* node) {
+        return clone_(node);
+    }
+};

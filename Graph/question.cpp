@@ -624,7 +624,6 @@ public:
     vector<int> par;
     int findPar(int u){
         if(par[u]==u) return u;
-        
         return par[u]=findPar(par[u]);
     }
     
@@ -896,7 +895,7 @@ public:
                     int p1=findPar(4*(z)+3);
                     int p2=findPar(4*(z+n)+1);
                     
-                   if(p1!=p2){
+                    if(p1!=p2){
                         par[p1]=p2;
                         count--;
                     }
