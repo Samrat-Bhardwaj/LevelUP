@@ -128,6 +128,7 @@ public class dijkstra_prims {
             if(vis[pair.vtx]) continue;
 
             vis[pair.vtx]=true;
+            par[pair.vtx] = pair.par;
 
             if(pair.vtx!=-1) edgeCount++;
 

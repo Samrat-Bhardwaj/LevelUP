@@ -250,3 +250,67 @@ public:
         return clone_(node);
     }
 };
+
+// hackerrank journey to the moon ==========================================================
+
+// https://www.hackerrank.com/challenges/journey-to-the-moon/problem
+
+// astronauts-> person belonging from same countries which we cant group together
+
+// ques-> number of groups of 2 astronauts from diff countries
+
+vector<int> par;
+vector<int> size;
+int findPar(int u){
+    if(par[u]==u) return u;
+    
+    return par[u]=findPar(par[u]);
+}
+
+void merge(int p1, int p2){
+    if(size[p1]>=size[p2]){
+        par[p2]=p1;
+        size[p1]+=size[p2];
+    } else {
+        par[p1]=p2;
+        size[p2]+=size[p1];
+    }
+}
+unsigned long long journeyToMoon(int n, vector<vector<int>> astronaut) {
+    for(int i=0; i<n; i++){
+        par.push_back(i);
+        size.push_back(1);
+    }
+    
+    for(vector<int> ast:astronaut){
+        int a=ast[0];
+        int b=ast[1];
+        
+        int p1=findPar(a);
+        int p2=findPar(b);
+        
+        if(p1!=p2){
+            merge(p1,p2);
+        }
+    }
+    
+    vector<int> final;
+    unsigned long long o=0; // number of astronauts jo sabse alag bs ek country se h
+
+    for(int i=0; i<n; i++){
+        if(par[i]==i){
+            if(size[i]==1) o++;
+            else final.push_back(size[i]);
+        }
+    }
+    
+    unsigned long long ans=0;
+    for(int i=0; i<final.size(); i++){
+        ans+=final[i]*o; // vo ek sabke sath ghus skte 
+        for(int j=i+1; j<final.size(); j++){
+            ans+=final[i]*final[j];
+        }
+    }
+    ans+=o*(o-1)/2; // simple maths 
+    return ans;
+}
