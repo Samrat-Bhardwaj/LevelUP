@@ -1,0 +1,154 @@
+#include<iostream>
+#include<vector>
+
+using namespace std;
+
+// Kadane's Algo ==============================================================================
+
+// for finding maximum sum of contiguous subarray ===========
+
+int Kadane(vector<int>& arr, int n){
+    int msf=arr[0]; // -> msf= max so far
+    int meh=0;      // -> meh= max ending here
+    
+    for(int i=0; i<n; i++){
+        meh+=arr[i];
+        if(meh<=0){
+            meh=0;
+        } else {
+            msf=max(msf,meh);
+        }
+    }
+    
+    return msf;
+}
+
+// leet 287 =================================================
+
+// find dup when numbers between 1-n =======
+int findDuplicate(int nums[],int n) {
+        for(int i=0; i<n; i++){
+            int t=abs(nums[i])-1;
+            if(nums[t]<0) return t+1;
+            nums[t]*=-1;
+        }
+        return -1;
+}
+
+// count inversions of array  ==================================================================
+
+// https://practice.geeksforgeeks.org/problems/inversion-of-array-1587115620/1
+
+// merge sort lekin gin lenge kitne humko aage piche krne element ---============
+
+
+#define ll long long int
+ll merge(ll arr[],ll temp[],int l, int m, int r){ // merge two sorted array 
+    ll inv=0;
+    
+    int i=l;
+    int j=m;
+    int k=l;
+    
+    while((i<=m-1) &&(j<=r)){
+        if(arr[i]<=arr[j]){
+            temp[k++]=arr[i++];
+        } else {
+            temp[k++]=arr[j++];
+            
+            inv+=(m-i);   // ab agr change krna h to m-i aage jayega vo -> isliye count+=(m-i);
+        }
+    }
+    
+    while(i<=m-1){ // copying baki ka elements 
+        temp[k++]=arr[i++];
+    }
+    
+    while(j<=r){
+        temp[k++]=arr[j++];
+    }
+    
+    for(i=l; i<=r; i++){ // copying back elements
+        arr[i]=temp[i];
+    }
+    
+    return inv;
+}
+ll mergeSort(ll arr[],ll temp[], int left, int right){
+    ll invert_Count=0;
+    
+    if(left < right){
+        int mid = (right+left)/2;
+        
+        invert_Count+=mergeSort(arr,temp,left,mid);
+        invert_Count+=mergeSort(arr,temp,mid+1,right);
+        
+        invert_Count+=merge(arr,temp,left,mid+1,right);
+    }
+    
+    return invert_Count;
+}
+long long int inversionCount(long long arr[], long long n)
+{
+    ll temp[n]; // helper array for merge sort
+    return mergeSort(arr,temp,0,n-1);
+}
+
+// how to find next permutation of a given permutation ======================================
+
+// leet 31===============
+
+/* We need to find the first pair of two successive numbers a[i]a[i] and a[i-1]a[i−1], from the right, 
+which satisfy a[i] > a[i-1]a[i]>a[i−1]. Now, no rearrangements to the right of a[i-1]a[i−1] can create a 
+larger permutation since that subarray consists of numbers in descending order. Thus, we need to rearrange 
+the numbers to the right of a[i-1]a[i−1] including itself.
+
+Now, what kind of rearrangement will produce the next larger number? We want to create the permutation 
+just larger than the current one. Therefore, we need to replace the number a[i-1]a[i−1] with the number 
+which is just larger than itself among the numbers lying to its right section, say a[j]a[j].*/
+
+// pahle last se pahla decreasing number nikalo, phir uske bad usse just bada number last se, swap kro dono ko
+    // and then reverse i k age ka array 
+    
+void reverse(vector<int>& nums, int i){
+        int j=nums.size()-1;
+        
+        while(i<j){
+            int temp=nums[i];
+            nums[i]=nums[j];
+            nums[j]=temp;
+            i++;
+            j--;
+        }
+    }
+
+    
+    void nextPermutation(vector<int>& nums) {
+        int n=nums.size();
+        int i=n-2;
+        
+        while(i>=0 && nums[i+1]<= nums[i]){ // decreasing element 
+            i--;
+        }
+        
+        if(i>=0){
+            int j=n-1;
+            while(j>=0 && nums[j] <= nums[i]){ // nums[i] se bada element 
+                j--;
+            }
+            int temp=nums[i]; // swap 
+            nums[i]=nums[j];
+            nums[j]=temp;
+        }
+        
+        reverse(nums,i+1); // reverse 
+    }
+
+void solve(){
+
+}
+
+int main(){
+    solve();
+    return 0;
+}
