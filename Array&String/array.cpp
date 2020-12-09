@@ -144,6 +144,30 @@ void reverse(vector<int>& nums, int i){
         reverse(nums,i+1); // reverse 
     }
 
+// common elements in 3 sorted arrays========================================
+
+ vector <int> commonElements (int A[], int B[], int C[], int n1, int n2, int n3){
+            vector<int> ans;
+            int i=0;
+            int j=0;
+            int k=0;
+            
+            while(i<n1 && j<n2 && k<n3){
+                while(j<n2 && B[j]<A[i]) j++;
+                while(k<n3 && C[k]<A[i]) k++;
+                
+                if(A[i]==B[j] && B[j]==C[k]){
+                    ans.push_back(A[i]);
+                } 
+
+                int temp=A[i];
+                while(A[i]==temp) i++; // taki ek hi element bar bar na aa jaye ans m
+
+            }
+            
+            return ans;
+    }
+
 void solve(){
 
 }
