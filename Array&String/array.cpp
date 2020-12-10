@@ -1,5 +1,6 @@
 #include<iostream>
 #include<vector>
+#include<algorithm>
 
 using namespace std;
 
@@ -168,6 +169,62 @@ void reverse(vector<int>& nums, int i){
             return ans;
     }
 
+// best time to buy n sell stocks when only 2 transactions r allowed ===============================
+
+int maxProfit(vector<int>& prices) {
+        int n=prices.size();
+        
+        vector<int> aage(n,0);  // i tak ka max transaction
+        vector<int> piche(n,0);  // i k aage ka max transaction  
+        
+        int minsf=prices[0]; // min so far
+        for(int i=1; i<n; i++){
+            minsf=min(minsf,prices[i]);
+            aage[i]=max(aage[i-1],prices[i]-minsf);
+        }
+        
+        int masf=prices[n-1];
+        for(int i=n-2; i>=0; i--){  // max so far 
+            masf=max(masf,prices[i]);
+            piche[i]=max(piche[i+1],masf-prices[i]);
+        }
+        
+        int ans=0;
+        
+        for(int i=0; i<n; i++){ 
+            ans=max(ans,aage[i]+piche[i]);
+        }
+        return ans;
+}
+
+
+// triplet sum exist 
+
+bool solve(vector<int>&arr, int n, int x){
+    sort(arr.begin(), arr.end()); 
+    
+    for(int i=0; i<n-2; i++){
+        int e=arr[i];
+        
+        int l=i+1;
+        int r=n-1;
+        
+        while(l<r){
+            int csum=e+arr[l]+arr[r];
+            if(csum==x){
+                return true;
+            } 
+            else if(csum<x){
+                l++;
+            } 
+            else {
+                r--;
+            }
+        }
+    }
+    
+    return false;
+}
 void solve(){
 
 }
