@@ -31,7 +31,7 @@ public:
     }    
 };
 
-void addEdge(int u, int v, int wt){
+void addEdge(vector<vector<Edge>>& graph,int u, int v, int wt){
     graph[u].push_back(Edge(v,wt));
 }
 
@@ -85,7 +85,59 @@ void dijkstra(int src){
 
 
 // prims algo =====================================================================================
+class primsPair{
+  public :  
+    int par;
+    int vtx;
+    int w;
 
+    primsPair(int par, int vtx, int w){
+        this->par=par;
+        this->vtx=vtx;
+        this->w=w;
+    }
+};
+
+class Compare{
+    public:
+        bool operator()(primsPair a, primsPair b){
+            return a.w < b.w;
+        }
+};
+
+void primsAlgo(int src){
+    vector<vector<Edge>> ngraph(N,vector<Edge>());
+
+    queue<primsPair> que;
+    int edgeCount=0;
+    vector<int> dis(N,(int)1e8);
+    dis[src]=0;
+    vector<bool> vis(N,false);
+
+    priority_queue<primsPair, vector<primsPair>, Compare> pq;
+
+    pq.push(primsPair{src,-1,0});
+    while(edgeCount<=N-1){
+        primsPair p=pq.top();pq.pop();
+
+        if(vis[p.vtx]) continue;
+
+        vis[p.vtx]=true;
+
+        if(p.par!=-1){
+            edgeCount++;
+            addEdge(ngraph,p.vtx,p.par,p.w);
+        }
+
+        for(Edge e:graph[p.vtx]){
+            if(!vis[e.v] && dis[e.v] >  e.w){
+                dis[e.v]=e.w;
+                pq.push(primsPair{e.v,p.vtx,e.w});
+            }
+        }
+    }
+    display(ngraph);
+}
 
 void solve(){
    vector<vector<int>> edges={{}};

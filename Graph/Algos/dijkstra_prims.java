@@ -59,6 +59,7 @@ public class dijkstra_prims {
         PriorityQueue<primsPair> pq=new PriorityQueue<>((a,b)->{
             return a.w - b.w;
         });
+
         boolean[] vis=new boolean[n];
         int[] dis=new int[n];
         Arrays.fill(dis,Integer.MAX_VALUE);
@@ -143,6 +144,8 @@ public class dijkstra_prims {
 
 
 // bellman ford ======================================================
+// works for same purpose as dijkstra but will work even if we have a negative edge + we get negative 
+// cycle as well 
 
 public static void BellmanFord_01(int N, int[][] edges,int src){
     int dis[]=new int[N];
