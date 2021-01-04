@@ -355,6 +355,38 @@ int countPalindromicSubsequences(string S) {
 
 // LIS set ========================================================================
 
+// how to solve lis in NlogN =====================================================
+
+int lengthOfLIS(vector<int>& nums) {
+        // solving lis in nlogn;
+        
+        vector<int> ans; // longest increasing subsequence banega isme as we move in array 
+        
+        for(int ele:nums){
+            int n=ans.size();
+            if(ans.size()==0 || ans[n-1] < ele){
+                ans.push_back(ele);
+            } else {
+                // binary search ki ye element jayega kaha 
+                
+                int lo=0;
+                int hi=n-1;
+                while(lo<hi){
+                    int m=(lo+hi)/2;
+                    
+                    if(ans[m] < ele){
+                        lo=m+1;
+                    } else {
+                        hi=m;
+                    }
+                }
+                
+                ans[lo]=ele;
+            }
+        }
+        // System.out.println(ans); // our lis
+        return ans.size();
+    }
 // leet 354 =========================================================================
 static bool compare(vector<int>& a, vector<int>& b){
         if(a[0]==b[0]) return a[1]>b[1];
