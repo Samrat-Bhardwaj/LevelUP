@@ -41,7 +41,7 @@ public class recursion4 {
     }
     
     public static void flood_fill_Jump_utility(){
-         int[][] visit=new int[3][3];
+        int[][] visit=new int[3][3];
         pair ans=flood_fill_Jump(0,0,2,2,visit);
         System.out.println(ans.path+" "+ans.len);
     }

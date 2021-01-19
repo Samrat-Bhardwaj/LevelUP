@@ -29,7 +29,7 @@ public class recursion_Sudoku {
             }
         }
         return true;
-     }
+    }
 
     public static boolean solve_su(int[][] matrix,int[] loc, int i){
         if(i==loc.length){
@@ -307,7 +307,7 @@ public class recursion_Sudoku {
 
     public static void solve() {
         sudokuSolver_utility();
-        //CryptArithmetic();  
+        //CryptArithmetic();  n
         //CrossWord();        
     }
     public static void main(String[] args) {

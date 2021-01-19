@@ -116,21 +116,21 @@ public int largestRectangleArea(int[] heights) {
 
 public int trap(int[] height) {
     int li=0;
-     int n=height.length;
-     int ri=n-1;
+    int n=height.length;
+    int ri=n-1;
     int lmax=0;
-     int rmax=0;
-     int ans=0;
-     while(li<ri){
-         lmax=Math.max(lmax,height[li]);
-         rmax=Math.max(rmax,height[ri]);
-         if(lmax<=rmax){
-             ans+=lmax-height[li];
-             li++;
-         } else {
-             ans+=rmax-height[ri];
-             ri--;
-         }
+    int rmax=0;
+    int ans=0;
+    while(li<ri){
+        lmax=Math.max(lmax,height[li]);
+        rmax=Math.max(rmax,height[ri]);
+        if(lmax<=rmax){
+            ans+=lmax-height[li];
+            li++;
+        } else {
+            ans+=rmax-height[ri];
+            ri--;
+        }
      }
      return ans;
 }
@@ -392,7 +392,7 @@ public static int ieo(String str){
     return s1.pop();
  }
  
- public static int solve(int o1, int o2, char op){
+public static int solve(int o1, int o2, char op){
       if(op == '+'){
       return o1 + o2;
     } else if(op == '-'){
@@ -402,12 +402,12 @@ public static int ieo(String str){
     } else {
       return o1 / o2;
     }
- } 
+} 
  
  public static int prec(char c){
-     if(c=='/' || c=='*'){
-         return 2; 
-     } else return 1;
+    if(c=='/' || c=='*'){
+        return 2; 
+    } else return 1;
 }
 
 // postfix evaluation =============================================================
@@ -431,7 +431,7 @@ public int evalRPN(String[] tokens) {
     for(int i=0; i<tokens.length; i++){
         String ch=tokens[i];
         
-         if(ch.equals("+") || ch.equals("-") || ch.equals("*") || ch.equals("/")){
+        if(ch.equals("+") || ch.equals("-") || ch.equals("*") || ch.equals("/")){
             int b=st1.pop();// it is important ki pahle vala piche aaye opeartor k
             int a=st1.pop();
             int c=solve_(a,b,ch.charAt(0));
